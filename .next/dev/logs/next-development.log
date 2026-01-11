@@ -1,7 +1,1 @@
-[00:00:01.474] Server  LOG      ✓ Ready in 1084ms
-[00:00:20.381] Server  WARN     ⚠ Cross origin request detected from 81e10d44-2524-46cb-8fca-07b83771b930.dev.coze.site to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
-Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
-[00:00:20.409] Browser ERROR   uncaughtError: ReferenceError: useRouter is not defined
-[00:01:13.926] Browser ERROR   uncaughtError: ReferenceError: useRouter is not defined
-[00:03:08.678] Server  LOG      ✓ Compiled in 67ms
-[00:03:08.789] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:00:01.443] Server  LOG      ✓ Ready in 1074ms

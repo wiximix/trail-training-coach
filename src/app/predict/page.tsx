@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import AuthGuard from "@/components/AuthGuard"
+import DashboardLayout from "@/components/DashboardLayout"
 import {
   calculateHourlyEnergyNeeds,
   calculateSupplyDosages,
@@ -383,21 +385,20 @@ export default function PredictPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-8">
-            <Link href="/" className="text-blue-600 hover:text-blue-700">
-              ← 返回首页
-            </Link>
+      <AuthGuard>
+        <DashboardLayout>
+          <div className="flex items-center justify-center py-12">
+            <div className="text-gray-600">加载中...</div>
           </div>
-          <p className="text-center text-gray-600">加载中...</p>
-        </div>
-      </div>
+        </DashboardLayout>
+      </AuthGuard>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <AuthGuard>
+      <DashboardLayout>
+        <div className="min-h-screen bg-gray-50">
       {/* 侧边栏 */}
       <aside
         className={`
@@ -920,5 +921,7 @@ export default function PredictPage() {
         </div>
       </main>
     </div>
+      </DashboardLayout>
+    </AuthGuard>
   )
 }

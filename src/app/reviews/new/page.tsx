@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import AuthGuard from "@/components/AuthGuard"
+import DashboardLayout from "@/components/DashboardLayout"
 
 interface Member {
   id: string
@@ -160,40 +162,47 @@ export default function NewReviewPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-center text-gray-600">加载中...</p>
-        </div>
-      </div>
+      <AuthGuard>
+        <DashboardLayout>
+          <div className="flex items-center justify-center py-12">
+            <div className="text-gray-600">加载中...</div>
+          </div>
+        </DashboardLayout>
+      </AuthGuard>
     )
   }
 
   if (!member || !trail || !predictedData) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-8">
-            <Link href="/predict" className="text-blue-600 hover:text-blue-700">
-              ← 返回成绩预测
-            </Link>
+      <AuthGuard>
+        <DashboardLayout>
+          <div className="space-y-6">
+            <div>
+              <Link href="/predict" className="text-blue-600 hover:text-blue-700">
+                ← 返回成绩预测
+              </Link>
+            </div>
+            <div className="rounded-lg bg-red-50 p-6 text-center text-red-600">
+              未找到预测数据，请先进行成绩预测
+            </div>
           </div>
-          <div className="rounded-lg bg-red-50 p-6 text-center text-red-600">
-            未找到预测数据，请先进行成绩预测
-          </div>
-        </div>
-      </div>
+        </DashboardLayout>
+      </AuthGuard>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-8">
-          <Link href="/predict" className="text-blue-600 hover:text-blue-700">
-            ← 返回成绩预测
-          </Link>
-          <h1 className="mt-4 text-3xl font-bold text-gray-900">创建复盘记录</h1>
-        </div>
+    <AuthGuard>
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div>
+            <Link href="/predict" className="text-blue-600 hover:text-blue-700">
+              ← 返回成绩预测
+            </Link>
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">创建复盘记录</h1>
+          </div>
 
         {error && (
           <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-600">{error}</div>
@@ -507,7 +516,8 @@ export default function NewReviewPage() {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+        </div>
+      </DashboardLayout>
+    </AuthGuard>
   )
 }
