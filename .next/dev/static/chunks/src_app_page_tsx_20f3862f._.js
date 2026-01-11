@@ -1,7 +1,31 @@
 (globalThis.TURBOPACK_CHUNK_LISTS || (globalThis.TURBOPACK_CHUNK_LISTS = [])).push({
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
-  "static/chunks/af9ea_next_dist_fc9beb60._.js"
+  "static/chunks/f1452_@smithy_core_dist-es_submodules_event-streams_index_86109046.js",
+  "static/chunks/af9ea_next_dist_compiled_crypto-browserify_index_6f81e63a.js",
+  "static/chunks/af9ea_next_dist_compiled_c2622139._.js",
+  "static/chunks/af9ea_next_dist_92024bee._.js",
+  "static/chunks/ae13b_drizzle-orm_4484f14c._.js",
+  "static/chunks/a7b7b_@langchain_openai_dist_b21f2db6._.js",
+  "static/chunks/864b8_openai_8459e52d._.js",
+  "static/chunks/3e2dd_@langchain_core_dist_7063279c._.js",
+  "static/chunks/7db37_langsmith_8d3ebc8b._.js",
+  "static/chunks/17462_zod_v4_core_54b44f49._.js",
+  "static/chunks/17462_zod_v4_locales_38a9a42b._.js",
+  "static/chunks/17462_zod_v4_classic_643a7bf1._.js",
+  "static/chunks/17462_zod_v4_13eb07c2._.js",
+  "static/chunks/17462_zod_v3_7fbc7f54._.js",
+  "static/chunks/993de_pg_lib_e80f32fe._.js",
+  "static/chunks/41f9e_@aws-sdk_client-s3_dist-es_endpoint_7b78bebc._.js",
+  "static/chunks/41f9e_@aws-sdk_client-s3_dist-es_schemas_schemas_0_11abb2a9.js",
+  "static/chunks/41f9e_@aws-sdk_client-s3_dist-es_commands_9e260f76._.js",
+  "static/chunks/41f9e_@aws-sdk_client-s3_dist-es_index_a5e325ea.js",
+  "static/chunks/41f9e_@aws-sdk_client-s3_dist-es_cbcbb765._.js",
+  "static/chunks/41f9e_@aws-sdk_client-s3_package_json_243f7bbf._.js",
+  "static/chunks/f1452_@smithy_core_dist-es_ec5e1340._.js",
+  "static/chunks/222b1_readable-stream_25e4bc57._.js",
+  "static/chunks/node_modules__pnpm_1e7386d3._.js",
+  "static/chunks/src_f6cc0e73._.js"
 ],
     source: "dynamic"
 });
