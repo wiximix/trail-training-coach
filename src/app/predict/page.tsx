@@ -366,6 +366,7 @@ export default function PredictPage() {
         setCheckpointPaces(initialPaces)
         setLocalCheckpointResults(data.data.checkpoints)
       } else {
+        console.log(data)
         setError(data.error || "预测失败")
       }
     } catch (err) {

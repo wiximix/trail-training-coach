@@ -1,4 +1,17 @@
 {
+  "/api/members/route": "app/api/members/route.js",
+  "/api/predict/route": "app/api/predict/route.js",
+  "/api/teams/[id]/members/route": "app/api/teams/[id]/members/route.js",
+  "/api/teams/[id]/route": "app/api/teams/[id]/route.js",
+  "/api/teams/my/route": "app/api/teams/my/route.js",
   "/api/teams/route": "app/api/teams/route.js",
-  "/page": "app/page.js"
+  "/api/trails/route": "app/api/trails/route.js",
+  "/members/page": "app/members/page.js",
+  "/page": "app/page.js",
+  "/predict/page": "app/predict/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/teams/[id]/page": "app/teams/[id]/page.js",
+  "/teams/new/page": "app/teams/new/page.js",
+  "/teams/page": "app/teams/page.js",
+  "/trails/page": "app/trails/page.js"
 }

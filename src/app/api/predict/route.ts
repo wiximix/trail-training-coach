@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
 import { MemberManager, TrailManager } from "@/storage/database"
+import {
+  parsePace,
+  generateSupplyStrategy,
+  calculateHourlyEnergyNeeds,
+  calculateSupplyDosages,
+  TERRAIN_TYPE_TO_FACTOR_KEY,
+  formatTime,
+  formatPace,
+} from "@/lib/trailAlgorithm"
 
 const memberManager = new MemberManager()
 const trailManager = new TrailManager()

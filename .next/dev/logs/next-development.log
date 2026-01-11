@@ -1,1 +1,143 @@
 [00:00:01.523] Server  LOG      ✓ Ready in 1161ms
+[00:06:43.247] Server  WARN    Error: Route "/api/teams/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:06:43.294] Server  WARN    Error: Route "/api/teams/[id]/members" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:06:43.583] Server  WARN    Error: Route "/api/teams/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:06:43.677] Server  WARN    Error: Route "/api/teams/[id]/members" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:08:17.281] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
+[00:08:30.888] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
+[00:09:12.944] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
+[00:11:03.304] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:11:04.269] Server  WARN     ⚠ Cross origin request detected from 81e10d44-2524-46cb-8fca-07b83771b930.dev.coze.site to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:11:05.027] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ScrollAndFocusHandler segmentPath={[...]}>
+      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+          <LoadingBoundary name="predict/" loading={null}>
+            <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <InnerLayoutRouter url="/predict" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+                    <SegmentViewNode type="page" pagePath="predict/pa...">
+                      <SegmentTrieNode>
+                      <ClientPageRoot Component={function PredictPage} serverProvidedParams={{...}}>
+                        <PredictPage params={Promise} searchParams={Promise}>
+                          <AuthGuard>
+                            <DashboardLayout>
+                              <div
++                               className="min-h-screen bg-gray-50"
+-                               className="min-h-screen flex items-center justify-center bg-gray-50"
+                              >
++                               <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+-                               <div className="text-center">
+                                ...
+                    ...
+                  ...
+        ...
+
+[00:14:18.513] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:14:19.682] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ScrollAndFocusHandler segmentPath={[...]}>
+      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+          <LoadingBoundary name="predict/" loading={null}>
+            <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <InnerLayoutRouter url="/predict" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+                    <SegmentViewNode type="page" pagePath="predict/pa...">
+                      <SegmentTrieNode>
+                      <ClientPageRoot Component={function PredictPage} serverProvidedParams={{...}}>
+                        <PredictPage params={Promise} searchParams={Promise}>
+                          <AuthGuard>
+                            <DashboardLayout>
+                              <div
++                               className="min-h-screen bg-gray-50"
+-                               className="min-h-screen flex items-center justify-center bg-gray-50"
+                              >
++                               <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+-                               <div className="text-center">
+                                ...
+                    ...
+                  ...
+        ...
+
+[00:14:38.566] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
+[00:14:45.922] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
+[00:16:28.336] Server  LOG      ✓ Compiled in 86ms
+[00:16:29.777] Server  LOG      ✓ Compiled in 81ms
+[00:16:37.762] Server  LOG      ✓ Compiled in 75ms
+[00:16:39.090] Server  LOG      ✓ Compiled in 79ms
+[00:16:40.399] Server  LOG      ✓ Compiled in 61ms
+[00:16:42.120] Server  LOG      ✓ Compiled in 64ms
+[00:16:50.222] Server  LOG      ✓ Compiled in 81ms
+[00:16:58.409] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
+[00:16:58.589] Browser LOG     预测失败
+[00:17:22.515] Server  LOG      ✓ Compiled in 71ms
+[00:17:26.448] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
+[00:17:26.633] Browser LOG     {"error":"预测失败","success":false}
+[00:20:12.635] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:20:12.954] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ScrollAndFocusHandler segmentPath={[...]}>
+      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+          <LoadingBoundary name="predict/" loading={null}>
+            <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <InnerLayoutRouter url="/predict" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+                    <SegmentViewNode type="page" pagePath="predict/pa...">
+                      <SegmentTrieNode>
+                      <ClientPageRoot Component={function PredictPage} serverProvidedParams={{...}}>
+                        <PredictPage params={Promise} searchParams={Promise}>
+                          <AuthGuard>
+                            <DashboardLayout>
+                              <div
++                               className="min-h-screen bg-gray-50"
+-                               className="min-h-screen flex items-center justify-center bg-gray-50"
+                              >
++                               <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+-                               <div className="text-center">
+                                ...
+                    ...
+                  ...
+        ...
+
+[00:21:35.577] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
+[00:21:35.796] Browser LOG     {"error":"预测失败","success":false}
