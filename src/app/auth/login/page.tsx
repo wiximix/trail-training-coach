@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -11,6 +11,7 @@ import { Mail, Lock, AlertCircle } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -44,8 +45,9 @@ export default function LoginPage() {
         localStorage.setItem("token", result.data.token)
         localStorage.setItem("user", JSON.stringify(result.data.user))
 
-        // 跳转到首页
-        router.push("/")
+        // 检查是否有重定向参数
+        const redirect = searchParams.get("redirect")
+        router.push(redirect || "/")
         router.refresh()
       } else {
         setError(result.message || "登录失败")

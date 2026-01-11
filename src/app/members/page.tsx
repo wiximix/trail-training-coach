@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import AuthGuard from "@/components/AuthGuard"
+import DashboardLayout from "@/components/DashboardLayout"
 
 interface Member {
   id: string
@@ -165,14 +166,11 @@ export default function MembersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="mx-auto max-w-7xl">
+    <AuthGuard>
+      <DashboardLayout>
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <Link href="/" className="text-blue-600 hover:text-blue-700">
-              ← 返回首页
-            </Link>
-            <h1 className="mt-4 text-3xl font-bold text-gray-900">成员管理</h1>
+            <h1 className="text-3xl font-bold text-gray-900">成员管理</h1>
           </div>
           <div className="flex gap-3">
             <button
@@ -338,7 +336,7 @@ export default function MembersPage() {
             </table>
           </div>
         )}
-      </div>
-    </div>
+      </DashboardLayout>
+    </AuthGuard>
   )
 }

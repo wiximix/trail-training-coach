@@ -1,28 +1,88 @@
-import type { Metadata } from "next"
-import Link from "next/link"
+"use client"
 
-export const metadata: Metadata = {
-  title: "越野训练教练",
-  description: "越野训练教练APP",
-}
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { isAuthenticated, getStoredUser, logout } from "@/lib/auth"
+import { User, LogOut } from "lucide-react"
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    setIsLoggedIn(isAuthenticated())
+    setUser(getStoredUser())
+  }, [])
+
+  const handleLogout = () => {
+    logout()
+    setIsLoggedIn(false)
+    setUser(null)
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-8">
-      <div className="mx-auto max-w-6xl">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+      {/* 导航栏 */}
+      <nav className="bg-white shadow-sm border-b border-gray-200">
+        <div className="mx-auto max-w-6xl px-8 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-900">
+              越野训练教练
+            </h1>
+            <div className="flex items-center gap-4">
+              {isLoggedIn ? (
+                <>
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    <User className="w-5 h-5" />
+                    <span>{user?.username || "个人中心"}</span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span>退出</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    登录
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    注册
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* 主要内容 */}
+      <div className="mx-auto max-w-6xl px-8 py-12">
         <header className="mb-12 text-center">
           <h1 className="mb-4 text-4xl font-bold text-gray-900">
-            越野训练教练
+            科学训练，智能预测
           </h1>
           <p className="text-lg text-gray-600">
-            科学训练，智能预测，助力越野跑者突破极限
+            助力越野跑者突破极限，实现最佳表现
           </p>
         </header>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Link
             href="/members"
-            className="group rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg"
+            className="group rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg hover:-translate-y-1"
           >
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
               <svg
@@ -49,7 +109,7 @@ export default function Home() {
 
           <Link
             href="/trails"
-            className="group rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg"
+            className="group rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg hover:-translate-y-1"
           >
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
               <svg
@@ -74,7 +134,7 @@ export default function Home() {
 
           <Link
             href="/predict"
-            className="group rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg"
+            className="group rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg hover:-translate-y-1"
           >
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-purple-600">
               <svg
