@@ -1,0 +1,246 @@
+/**
+ * 越野跑成绩预测核心算法单元测试
+ *
+ * 测试目标：
+ * - 验证所有算法函数的正确性
+ * - 验证边界值处理
+ * - 验证异常场景处理
+ */
+
+import {
+  calculatePer100mElevation,
+  calculateSlopePercent,
+  calculateElevationFactor,
+  parsePace,
+  calculateTrailPace,
+  formatTime,
+  formatPace,
+  calculateHourlyEnergyNeeds,
+  calculateSupplyDosages,
+  generateSupplyStrategy,
+  DEFAULT_TERRAIN_PACE_FACTORS,
+  TERRAIN_TYPE_TO_FACTOR_KEY,
+} from "../trailAlgorithm"
+
+describe("trailAlgorithm - 坡度计算相关算法", () => {
+  describe("calculatePer100mElevation", () => {
+    test("应正确计算每100米爬升量（上坡）", () => {
+      expect(calculatePer100mElevation(96, 2.64)).toBe(3.64)
+      expect(calculatePer100mElevation(100, 2.0)).toBe(5.0)
+    })
+
+    test("应正确计算每100米爬升量（下坡）", () => {
+      expect(calculatePer100mElevation(-50, 2.0)).toBe(-2.5)
+    })
+
+    test("应处理距离为0的边界值", () => {
+      expect(calculatePer100mElevation(100, 0)).toBe(0)
+      expect(calculatePer100mElevation(100, -1)).toBe(0)
+    })
+
+    test("应保留2位小数", () => {
+      expect(calculatePer100mElevation(100, 3.33)).toBeCloseTo(3.0, 2)
+    })
+  })
+
+  describe("calculateSlopePercent", () => {
+    test("应正确计算坡度百分比", () => {
+      expect(calculateSlopePercent(100, 2.0)).toBe(5.0)
+      expect(calculateSlopePercent(50, 1.0)).toBe(5.0)
+    })
+
+    test("应正确计算下坡坡度", () => {
+      expect(calculateSlopePercent(-100, 2.0)).toBe(-5.0)
+    })
+
+    test("应处理距离为0的边界值", () => {
+      expect(calculateSlopePercent(100, 0)).toBe(0)
+    })
+
+    test("应保留2位小数", () => {
+      expect(calculateSlopePercent(100, 3.33)).toBeCloseTo(3.0, 2)
+    })
+  })
+})
+
+describe("trailAlgorithm - 爬升影响值计算算法", () => {
+  describe("calculateElevationFactor", () => {
+    test("平路/微坡（0~3米）：固定影响0.1", () => {
+      expect(calculateElevationFactor(0)).toBe(0.1)
+      expect(calculateElevationFactor(2.0)).toBe(0.1)
+      expect(calculateElevationFactor(3.0)).toBe(0.1)
+    })
+
+    test("缓上坡（3~8米）：线性影响 0.3 × 每100米爬升", () => {
+      expect(calculateElevationFactor(3.64)).toBeCloseTo(1.09, 1)
+      expect(calculateElevationFactor(5.0)).toBe(1.5)
+      expect(calculateElevationFactor(8.0)).toBe(2.4)
+    })
+
+    test("陡上坡（8~15米）：陡坡影响 0.4 × 每100米爬升", () => {
+      expect(calculateElevationFactor(10.0)).toBe(4.0)
+      expect(calculateElevationFactor(15.0)).toBe(6.0)
+    })
+
+    test("急上坡（>15米）：急坡影响 0.5 × 每100米爬升", () => {
+      expect(calculateElevationFactor(20.0)).toBe(10.0)
+      expect(calculateElevationFactor(25.0)).toBe(12.5)
+    })
+
+    test("下坡：负值计算，不低于-0.5", () => {
+      expect(calculateElevationFactor(-2.5)).toBeGreaterThanOrEqual(-0.5)
+      expect(calculateElevationFactor(-10.0)).toBeGreaterThanOrEqual(-0.5)
+      expect(calculateElevationFactor(-20.0)).toBe(-0.5)
+    })
+
+    test("下坡值应小于上坡值", () => {
+      const up = calculateElevationFactor(5.0)
+      const down = calculateElevationFactor(-5.0)
+      expect(down).toBeLessThan(up)
+    })
+  })
+})
+
+describe("trailAlgorithm - 配速计算相关算法", () => {
+  describe("parsePace", () => {
+    test("应正确解析配速字符串", () => {
+      expect(parsePace("5:30/km")).toBe(5.5)
+      expect(parsePace("6:00/km")).toBe(6.0)
+      expect(parsePace("4:45/km")).toBe(4.75)
+    })
+
+    test("空值时应返回默认配速6:00/km", () => {
+      expect(parsePace("")).toBe(6.0)
+      expect(parsePace(undefined as any)).toBe(6.0)
+    })
+  })
+
+  describe("calculateTrailPace", () => {
+    test("应正确计算基础配速（无路段系数）", () => {
+      expect(calculateTrailPace(6.0, 100, "山路")).toBeCloseTo(7.0, 1)
+    })
+
+    test("应应用路段配速系数", () => {
+      const factors = { ...DEFAULT_TERRAIN_PACE_FACTORS }
+      const pace = calculateTrailPace(6.0, 100, "沙地", factors)
+      expect(pace).toBeGreaterThan(7.0) // 沙地系数1.1
+    })
+
+    test("下坡配速应不低于基础配速的7折", () => {
+      const pace = calculateTrailPace(6.0, -100, "山路")
+      expect(pace).toBeGreaterThanOrEqual(4.2) // 6.0 * 0.7 = 4.2
+    })
+  })
+
+  describe("formatTime", () => {
+    test("应正确格式化分钟数为HH:MM:SS", () => {
+      expect(formatTime(0)).toBe("00:00:00")
+      expect(formatTime(60)).toBe("01:00:00")
+      expect(formatTime(125.5)).toBe("02:05:30")
+      expect(formatTime(125.75)).toBe("02:05:45")
+    })
+  })
+
+  describe("formatPace", () => {
+    test("应正确格式化配速为MM:SS/km", () => {
+      expect(formatPace(6.0)).toBe("6:00/km")
+      expect(formatPace(5.5)).toBe("5:30/km")
+      expect(formatPace(4.75)).toBe("4:45/km")
+    })
+  })
+})
+
+describe("trailAlgorithm - 补给策略计算算法", () => {
+  describe("calculateHourlyEnergyNeeds", () => {
+    test("应根据出汗量调整水和电解质需求", () => {
+      const light = calculateHourlyEnergyNeeds("有一点", 70)
+      expect(light.water).toBe(500)
+      expect(light.electrolytes).toBe(400)
+
+      const heavy = calculateHourlyEnergyNeeds("汗流浃背", 70)
+      expect(heavy.water).toBe(800)
+      expect(heavy.electrolytes).toBe(800)
+    })
+
+    test("应根据体重调整碳水需求", () => {
+      const needs = calculateHourlyEnergyNeeds("有一点", 70)
+      expect(needs.carbs).toBe(70)
+    })
+
+    test("体重为null时应使用默认值60", () => {
+      const needs = calculateHourlyEnergyNeeds("有一点", null)
+      expect(needs.carbs).toBe(60)
+    })
+  })
+
+  describe("calculateSupplyDosages", () => {
+    test("应正确计算能量胶份数", () => {
+      const needs = { carbs: 70, water: 600, electrolytes: 600 }
+      const dosages = calculateSupplyDosages(needs, 100, undefined, undefined)
+      expect(dosages.gelsPerHour).toBeCloseTo(0.7, 1)
+    })
+
+    test("应正确计算盐丸份数", () => {
+      const needs = { carbs: 70, water: 600, electrolytes: 600 }
+      const dosages = calculateSupplyDosages(needs, undefined, 200, undefined)
+      expect(dosages.saltsPerHour).toBe(3.0)
+    })
+
+    test("应正确计算电解质粉份数", () => {
+      const needs = { carbs: 70, water: 600, electrolytes: 600 }
+      const dosages = calculateSupplyDosages(needs, undefined, undefined, 300)
+      expect(dosages.electrolytePowderPerHour).toBeCloseTo(2.0, 1)
+    })
+  })
+
+  describe("generateSupplyStrategy", () => {
+    test("应根据出汗量生成补水策略", () => {
+      const strategy = generateSupplyStrategy({
+        crampFrequency: "从来没有",
+        expectedSweatRate: "多汗",
+        preferredSupplyTypes: [],
+        distance: 50,
+      })
+      expect(strategy).toContain("每5-6公里补水100-150ml")
+    })
+
+    test("应根据抽筋情况生成电解质策略", () => {
+      const strategy = generateSupplyStrategy({
+        crampFrequency: "有时",
+        expectedSweatRate: "有一点",
+        preferredSupplyTypes: [],
+        distance: 50,
+      })
+      expect(strategy).toContain("每补给点额外补充1-2粒盐丸")
+    })
+
+    test("应根据喜好补给类型生成建议", () => {
+      const strategy = generateSupplyStrategy({
+        crampFrequency: "从来没有",
+        expectedSweatRate: "有一点",
+        preferredSupplyTypes: ["能量胶", "能量棒"],
+        distance: 50,
+      })
+      expect(strategy).toContain("能量胶每40-45分钟补充一支")
+      expect(strategy).toContain("能量棒每1.5-2小时补充一根")
+    })
+  })
+})
+
+describe("trailAlgorithm - 常量和工具函数", () => {
+  test("DEFAULT_TERRAIN_PACE_FACTORS 应包含所有路段类型", () => {
+    expect(DEFAULT_TERRAIN_PACE_FACTORS.sand).toBe(1.1)
+    expect(DEFAULT_TERRAIN_PACE_FACTORS.farmRoad).toBe(1.0)
+    expect(DEFAULT_TERRAIN_PACE_FACTORS.mountainRoad).toBe(1.0)
+    expect(DEFAULT_TERRAIN_PACE_FACTORS.stoneRoad).toBe(1.0)
+    expect(DEFAULT_TERRAIN_PACE_FACTORS.steps).toBe(1.0)
+  })
+
+  test("TERRAIN_TYPE_TO_FACTOR_KEY 应正确映射所有路段类型", () => {
+    expect(TERRAIN_TYPE_TO_FACTOR_KEY["沙地"]).toBe("sand")
+    expect(TERRAIN_TYPE_TO_FACTOR_KEY["机耕道"]).toBe("farmRoad")
+    expect(TERRAIN_TYPE_TO_FACTOR_KEY["山路"]).toBe("mountainRoad")
+    expect(TERRAIN_TYPE_TO_FACTOR_KEY["石铺路"]).toBe("stoneRoad")
+    expect(TERRAIN_TYPE_TO_FACTOR_KEY["台阶"]).toBe("steps")
+  })
+})
