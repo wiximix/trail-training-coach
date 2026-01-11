@@ -37,6 +37,13 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-11 | `bcafa7b1f4536910460372ad2d1dc97be4d4d433` | main | chore: 更新 commit 日志 | 无 |  |
+| 2026-01-11 | `44f57f0225007f0a6546ca22d7495c39a3e58e5f` | main | chore: 更新 commit 日志 | 无 |  |
+| 2026-01-11 | `d28ce95a5701cf1cee7cd642ea4a6460b29507c8` | main | chore: 更新 commit 日志 | 无 |  |
+| 2026-01-11 | `784e3435318349930b252ea2323ea397bd4cd681` | main | chore: 更新 commit 日志 | 无 |  |
+| 2026-01-11 | `8a5721f453cbe1391766ab96502537f7117ce98b` | main | chore: 更新 commit 日志 | 无 |  |
+| 2026-01-11 | `240000c8950b669f4cd8e07f74e7003843a3d0c5` | main | chore: 同步 dev 分支与 main 分支内容 | 无 | .next/dev/logs/next-development.log,.next/dev/prerender-manifest.json,.next/dev/server/app-paths-manifest.json,.next/dev/server/next-font-manifest.js,.next/dev/server/next-font-manifest.js,.next/dev/server/server-reference-manifest.js,.next/dev/server/server-reference-manifest.json,.next/dev/trace,tmp/git_status_report.md |
+| 2026-01-11 | `c4ff985506c4330b2c2a0b65582ef666cc8689db` | main | chore: 更新 commit 日志 | 无 |  |
 | 2026-01-11 | `9efce48bdfc8ff83360ac88f9d30cdac1bda5453` | main | chore: 更新 package.json，添加越野训练教练APP所需依赖 | 无 | pnpm-lock.yaml |
 | 2026-01-11 | `07c8c73f413a4632a55304e04c271bea714cb3ba` | main | Update - 2026-01-11 20:54:55 | 无 |  |
 | 2026-01-11 | `2bffddab93e48cc39d8c3fd130506c810d7e82c9` | main | chore: 更新 commit 日志 | 无 |  |
