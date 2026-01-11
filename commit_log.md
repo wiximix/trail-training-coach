@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-11 | `6313eee0a31a9a7d68a60622d70bcded003bbb2e` | main | feat: 添加用户注册和登录功能 | 无 | drizzle/migrations/0001_create_users_table.sql,package.json,pnpm-lock.yaml,src/app/api/auth/login/route.ts,src/app/api/auth/register/route.ts,src/app/auth/login/page.tsx,src/app/auth/register/page.tsx,src/storage/database/shared/schema.ts,src/storage/database/userManager.ts |
 | 2026-01-11 | `999d03b2c7faaada680fd457053f82e46e121f1e` | dev | chore: 更新 commit 日志 | 无 |  |
 | 2026-01-11 | `d49a298cafa8db835577dc210048f324a50cb225` | dev | fix: 解决 commit 日志合并冲突 | 无 |  |
 | 2026-01-11 | `bcafa7b1f4536910460372ad2d1dc97be4d4d433` | main | chore: 更新 commit 日志 | 无 |  |

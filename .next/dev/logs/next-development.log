@@ -1,1 +1,5 @@
 [00:00:01.415] Server  LOG      ✓ Ready in 970ms
+[01:00:38.598] Server  LOG      ✓ Compiled in 88ms
+[01:01:28.744] Server  LOG      ✓ Compiled in 79ms
+[01:02:05.415] Server  ERROR   注册错误: Error: 该用户名已被使用
+[01:02:07.383] Server  ERROR   登录错误: Error: 邮箱或密码错误
