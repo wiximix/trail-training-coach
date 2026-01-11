@@ -1,7 +1,25 @@
-import { pgTable, varchar, integer, text, timestamp, jsonb } from "drizzle-orm/pg-core"
+import { pgTable, varchar, integer, text, timestamp, jsonb, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 import { createSchemaFactory } from "drizzle-zod"
 import { z } from "zod"
+
+// 用户表
+export const users = pgTable(
+  "users",
+  {
+    id: varchar("id", { length: 36 })
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    username: varchar("username", { length: 50 }).notNull().unique(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+  }
+)
 
 // 成员表
 export const members = pgTable(
@@ -58,6 +76,34 @@ const { createInsertSchema: createCoercedInsertSchema } = createSchemaFactory({
   coerce: { date: true },
 })
 
+// 用户相关的 Zod schemas
+export const insertUserSchema = createCoercedInsertSchema(users).omit({
+  id: true,
+  passwordHash: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
+export const loginUserSchema = z.object({
+  email: z.string().email("请输入有效的邮箱地址"),
+  password: z.string().min(6, "密码至少需要6个字符"),
+})
+
+export const registerUserSchema = z.object({
+  username: z.string()
+    .min(3, "用户名至少需要3个字符")
+    .max(50, "用户名不能超过50个字符")
+    .regex(/^[a-zA-Z0-9_]+$/, "用户名只能包含字母、数字和下划线"),
+  email: z.string().email("请输入有效的邮箱地址"),
+  password: z.string()
+    .min(6, "密码至少需要6个字符")
+    .max(100, "密码不能超过100个字符"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "两次输入的密码不一致",
+  path: ["confirmPassword"],
+})
+
 // 成员相关的 Zod schemas
 export const insertMemberSchema = createCoercedInsertSchema(members).omit({
   id: true,
@@ -87,6 +133,11 @@ export const updateTrailSchema = createCoercedInsertSchema(trails)
   .partial()
 
 // TypeScript types
+export type User = typeof users.$inferSelect
+export type InsertUser = z.infer<typeof insertUserSchema>
+export type LoginUser = z.infer<typeof loginUserSchema>
+export type RegisterUser = z.infer<typeof registerUserSchema>
+
 export type Member = typeof members.$inferSelect
 export type InsertMember = z.infer<typeof insertMemberSchema>
 export type UpdateMember = z.infer<typeof updateMemberSchema>
