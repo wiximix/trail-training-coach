@@ -1,3 +1,6 @@
 {
-  "/page": "app/page.js"
+  "/api/members/route": "app/api/members/route.js",
+  "/api/trails/route": "app/api/trails/route.js",
+  "/page": "app/page.js",
+  "/predict/page": "app/predict/page.js"
 }
