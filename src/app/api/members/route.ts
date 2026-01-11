@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { memberManager } from "@/storage/database"
+import { MemberManager } from "@/storage/database"
+
+const memberManager = new MemberManager()
 
 // GET /api/members - 获取成员列表
 export async function GET(request: NextRequest) {

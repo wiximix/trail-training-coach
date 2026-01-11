@@ -127,8 +127,9 @@ export class UserManager {
     const { skip = 0, limit = 100 } = options
     const db = await getDb()
     const userList = await db.select().from(users).limit(limit).offset(skip)
-    return userList.map(({ passwordHash: _, ...user }) => user)
+    return userList.map((user: any) => {
+      const { passwordHash, ...userWithoutPassword } = user
+      return userWithoutPassword
+    })
   }
 }
-
-export const userManager = new UserManager()

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { userManager } from "@/storage/database/userManager"
+import { UserManager } from "@/storage/database/userManager"
 import type { LoginUser } from "@/storage/database/shared/schema"
+
+const userManager = new UserManager()
 
 export async function POST(request: NextRequest) {
   try {

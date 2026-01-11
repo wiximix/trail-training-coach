@@ -50,5 +50,3 @@ export class ReviewManager {
     return (result.rowCount ?? 0) > 0
   }
 }
-
-export const reviewManager = new ReviewManager()

@@ -1,15 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { memberManager, trailManager } from "@/storage/database"
-import {
-  parsePace,
-  calculateHourlyEnergyNeeds,
-  calculateSupplyDosages,
-  generateSupplyStrategy,
-  formatTime,
-  formatPace,
-  TERRAIN_TYPE_TO_FACTOR_KEY,
-  type TerrainPaceFactors,
-} from "@/lib/trailAlgorithm"
+import { MemberManager, TrailManager } from "@/storage/database"
+
+const memberManager = new MemberManager()
+const trailManager = new TrailManager()
 
 interface PredictionRequest {
   memberId: string

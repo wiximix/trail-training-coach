@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { trailManager } from "@/storage/database"
+import { TrailManager } from "@/storage/database"
+
+const trailManager = new TrailManager()
 
 // GET /api/trails - 获取赛道列表
 export async function GET(request: NextRequest) {

@@ -40,5 +40,3 @@ export class MemberManager {
     return (result.rowCount ?? 0) > 0
   }
 }
-
-export const memberManager = new MemberManager()

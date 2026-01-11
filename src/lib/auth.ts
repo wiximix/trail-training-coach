@@ -1,5 +1,3 @@
-import { userManager } from "@/storage/database/userManager"
-
 export interface AuthUser {
   id: string
   username: string
@@ -44,34 +42,6 @@ export function clearAuth(): void {
 // 检查是否已登录
 export function isAuthenticated(): boolean {
   return getToken() !== null && getStoredUser() !== null
-}
-
-// 验证 token 是否有效
-export async function validateToken(token: string): Promise<boolean> {
-  try {
-    const result = await userManager.verifyToken(token)
-    return result !== null
-  } catch {
-    return false
-  }
-}
-
-// 获取当前用户（从本地存储或服务器验证）
-export async function getCurrentUser(): Promise<AuthUser | null> {
-  const token = getToken()
-  if (!token) return null
-
-  // 先从本地存储获取
-  const storedUser = getStoredUser()
-  if (storedUser) {
-    // 验证 token 是否有效
-    const isValid = await validateToken(token)
-    if (isValid) return storedUser
-  }
-
-  // 如果无效，清除本地存储
-  clearAuth()
-  return null
 }
 
 // 注销用户
