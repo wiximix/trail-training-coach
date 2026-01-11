@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-11 | `ac605c5ee892c1c2cb5de6cddf91a305f996c7a1` | main | chore: 清理测试文件 | 无 |  |
 | 2026-01-11 | `3e0d0fce736e563fb27f76353caf9b8a4e8d2d47` | main | test: 测试 post-commit hook | 无 |  |
 | 2026-01-11 | dc40059 | main | Add GitHub upload script | 创建 GitHub 上传脚本，用于自动化部署项目代码到 GitHub 仓库 | upload_to_github.sh |
 | 2026-01-11 | 9c79d75 | main | Initial commit | 初始化项目，创建 Next.js 越野训练教练APP的基础结构 | 所有项目文件 |
