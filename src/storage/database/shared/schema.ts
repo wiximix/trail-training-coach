@@ -246,6 +246,78 @@ export type Review = typeof reviews.$inferSelect
 export type InsertReview = z.infer<typeof insertReviewSchema>
 export type UpdateReview = z.infer<typeof updateReviewSchema>
 
+// 跑团表
+export const teams = pgTable(
+  "teams",
+  {
+    id: varchar("id", { length: 36 })
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 100 }).notNull(), // 跑团名称
+    description: text("description"), // 跑团描述
+    ownerId: varchar("owner_id", { length: 36 }).notNull(), // 创建者ID
+    memberCount: integer("member_count").default(0), // 成员数量
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+  }
+)
+
+// 跑团成员关系表
+export const teamMembers = pgTable(
+  "team_members",
+  {
+    id: varchar("id", { length: 36 })
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    teamId: varchar("team_id", { length: 36 }).notNull(), // 跑团ID
+    userId: varchar("user_id", { length: 36 }).notNull(), // 用户ID
+    role: varchar("role", { length: 20 }).default("member"), // 角色: owner, admin, member
+    status: varchar("status", { length: 20 }).default("pending"), // 状态: pending, approved, rejected, left
+    joinedAt: timestamp("joined_at", { withTimezone: true }), // 加入时间
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+  }
+)
+
+// 跑团相关的 Zod schemas
+export const insertTeamSchema = createCoercedInsertSchema(teams).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
+export const updateTeamSchema = createCoercedInsertSchema(teams)
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .partial()
+
+export const insertTeamMemberSchema = createCoercedInsertSchema(teamMembers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
+export const updateTeamMemberSchema = createCoercedInsertSchema(teamMembers)
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .partial()
+
+// TypeScript types
+export type Team = typeof teams.$inferSelect
+export type InsertTeam = z.infer<typeof insertTeamSchema>
+export type UpdateTeam = z.infer<typeof updateTeamSchema>
+
+export type TeamMember = typeof teamMembers.$inferSelect
+export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>
+export type UpdateTeamMember = z.infer<typeof updateTeamMemberSchema>
 
 
 

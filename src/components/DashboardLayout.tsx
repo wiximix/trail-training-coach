@@ -28,6 +28,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { href: "/trails", label: "赛道管理" },
     { href: "/predict", label: "成绩预测" },
     { href: "/reviews", label: "训练复盘" },
+    { href: "/teams", label: "跑团" },
   ]
 
   return (
