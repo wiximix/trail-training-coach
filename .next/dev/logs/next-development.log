@@ -116,3 +116,94 @@ Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allow
 [00:40:35.938] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
 [00:40:36.142] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
 [00:40:36.209] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:41:42.523] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:41:42.669] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:43:50.735] Server  LOG      ✓ Compiled in 83ms
+[00:43:50.778] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:43:50.778] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/theme.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[00:43:50.779] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:43:50.795] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:43:50.795] Server  WARN     ⚠ Fast Refresh had to perform a full reload when ./src/lib/theme.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[00:43:50.795] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:43:52.754] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:43:52.960] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ScrollAndFocusHandler segmentPath={[...]}>
+      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+          <LoadingBoundary name="predict/" loading={null}>
+            <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <InnerLayoutRouter url="/predict" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+                    <SegmentViewNode type="page" pagePath="predict/pa...">
+                      <SegmentTrieNode>
+                      <ClientPageRoot Component={function PredictPage} serverProvidedParams={{...}}>
+                        <PredictPage params={Promise} searchParams={Promise}>
+                          <AuthGuard>
+                            <DashboardLayout>
+                              <div
++                               className="min-h-screen bg-gray-50 dark:bg-gray-900"
+-                               className="min-h-screen flex items-center justify-center bg-gray-50"
+                              >
++                               <nav
++                                 className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-..."
++                               >
+-                               <div className="text-center">
+                                ...
+                    ...
+                  ...
+        ...
+
+[00:43:53.192] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ScrollAndFocusHandler segmentPath={[...]}>
+      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+          <LoadingBoundary name="predict/" loading={null}>
+            <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <InnerLayoutRouter url="/predict" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+                    <SegmentViewNode type="page" pagePath="predict/pa...">
+                      <SegmentTrieNode>
+                      <ClientPageRoot Component={function PredictPage} serverProvidedParams={{...}}>
+                        <PredictPage params={Promise} searchParams={Promise}>
+                          <AuthGuard>
+                            <DashboardLayout>
+                              <div
++                               className="min-h-screen bg-gray-50 dark:bg-gray-900"
+-                               className="min-h-screen flex items-center justify-center bg-gray-50"
+                              >
++                               <nav
++                                 className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-..."
++                               >
+-                               <div className="text-center">
+                                ...
+                    ...
+                  ...
+        ...
+
+[00:44:44.627] Server  LOG      ✓ Compiled in 75ms

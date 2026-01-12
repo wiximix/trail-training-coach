@@ -40,11 +40,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme((prev) => (prev === "light" ? "dark" : "light"))
   }
 
-  // 避免服务端渲染不匹配
-  if (!mounted) {
-    return <>{children}</>
-  }
-
+  // 始终提供 context，即使在 mounted 为 false 时
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
