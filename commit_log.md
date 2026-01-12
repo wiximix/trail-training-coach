@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-12 | `3b389efd6fac817144f20c9690773bf55b36d48d` | main | fix: 修复登录后跳转问题，添加详细的调试日志 | 无 | src/app/auth/login/LoginClient.tsx,src/components/AuthGuard.tsx,src/lib/auth.ts,tsconfig.tsbuildinfo |
 | 2026-01-12 | `3fd719e728546823b50ecaf71ffe251fd750f47d` | main | auto saved your changes before deploy | 无 |  |
 | 2026-01-12 | `cee3e9110f3973e778af77422bd879702f439bbb` | main | config: 配置正式域名 byptb6339h.coze.site | 无 | next.config.ts,src/app/layout.tsx |
 | 2026-01-12 | `aee50807f809f398b6623ce0e535311453d2e519` | main | auto saved your changes before deploy | 无 |  |
