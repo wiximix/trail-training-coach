@@ -61,9 +61,19 @@ export async function POST(request: NextRequest) {
       bucketName: process.env.COZE_BUCKET_NAME,
     })
 
+    // 生成安全的文件名：移除非法字符，只保留字母、数字、点、下划线、短横
+    const originalFileName = file.name
+    const fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'))
+    const timestamp = Date.now()
+    
+    // 只使用时间戳和随机数作为文件名，避免中文字符问题
+    const randomSuffix = Math.random().toString(36).substring(2, 8)
+    const safeFileName = `route-map-${timestamp}-${randomSuffix}${fileExtension}`
+    
     // 上传到对象存储
-    const fileName = `route-maps/${Date.now()}_${file.name}`
+    const fileName = `route-maps/${safeFileName}`
     console.log("文件名:", fileName)
+    console.log("原始文件名:", originalFileName)
 
     const fileKey = await storage.uploadFile({
       fileContent: buffer,
