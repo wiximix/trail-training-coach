@@ -36,6 +36,8 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
     lactateThresholdHeartRate: "",
     lactateThresholdPace: "",
     marathonPace: "",
+    vo2Max: "", // 最大摄氧量（VO2Max）
+    flatBaselinePace: "", // 平路基准配速（P0）
     terrainPaceFactors: {
       sand: 1.1,
       farmRoad: 1.0,
@@ -71,6 +73,8 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
           lactateThresholdHeartRate: member.lactateThresholdHeartRate?.toString() || "",
           lactateThresholdPace: member.lactateThresholdPace || "",
           marathonPace: member.marathonPace || "",
+          vo2Max: member.vo2Max?.toString() || "", // 最大摄氧量
+          flatBaselinePace: member.flatBaselinePace || "", // 平路基准配速
           terrainPaceFactors: (member.terrainPaceFactors as any) || {
             sand: 1.1,
             farmRoad: 1.0,
@@ -111,6 +115,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
         lactateThresholdHeartRate: formData.lactateThresholdHeartRate
           ? Number(formData.lactateThresholdHeartRate)
           : null,
+        vo2Max: formData.vo2Max ? Number(formData.vo2Max) : null, // 最大摄氧量
         preferredSupplyTypes:
           formData.preferredSupplyTypes.length > 0
             ? formData.preferredSupplyTypes
@@ -245,6 +250,39 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
             <div className="space-y-4">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
+                  平路基准配速 P0（如 5:30/km）
+                </label>
+                <input
+                  type="text"
+                  placeholder="5:30/km"
+                  value={formData.flatBaselinePace}
+                  onChange={(e) => setFormData({ ...formData, flatBaselinePace: e.target.value })}
+                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  跑者跑步能力中"有氧耐力区间"的平均配速（越野赛以有氧强度为主）
+                </p>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  最大摄氧量 VO2Max（ml/kg/min）
+                </label>
+                <input
+                  type="number"
+                  placeholder="如 50"
+                  min="30"
+                  max="80"
+                  step="1"
+                  value={formData.vo2Max}
+                  onChange={(e) => setFormData({ ...formData, vo2Max: e.target.value })}
+                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  范围：30-80 ml/kg/min，用于计算爬升损耗系数k（VO2Max越高，k越小）
+                </p>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
                   马拉松配速 (如 5:30/km)
                 </label>
                 <input
@@ -314,11 +352,11 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
             </div>
           </div>
 
-          {/* 路段配速系数 */}
+          {/* 地形复杂度系数 */}
           <div>
-            <h2 className="mb-4 text-xl font-semibold text-gray-900">路段配速系数</h2>
+            <h2 className="mb-4 text-xl font-semibold text-gray-900">地形复杂度系数（α）</h2>
             <p className="mb-4 text-sm text-gray-600">
-              不同类型路段对配速的影响系数，系数越大用时越长。默认值都是1，沙地默认值是1.1。
+              不同地形类型对配速的影响系数（通常取1.1~1.3），系数越大用时越长。默认值都是1，沙地默认值是1.1。
             </p>
             <div className="grid grid-cols-5 gap-4">
               <div>

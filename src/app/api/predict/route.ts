@@ -5,6 +5,8 @@ import {
   generateSupplyStrategy,
   calculateHourlyEnergyNeeds,
   calculateSupplyDosages,
+  calculateElevationLossCoefficient,
+  calculateSegmentTime,
   TERRAIN_TYPE_TO_FACTOR_KEY,
   formatTime,
   formatPace,
@@ -29,15 +31,15 @@ interface PredictionRequest {
 interface PredictionResult {
   estimatedTime: string
   estimatedPace: string
-  plannedPace?: string // 计划配速
+  flatBaselinePace: string // 平路基准配速P0
+  elevationLossCoefficient: number // 爬升损耗系数k（秒/米）
   checkpoints: Array<{
     id: number
-    distance: number
-    elevation: number
+    distance: number // 分段距离Di（km）
+    elevation: number // 分段爬升Ei（m）
     downhillDistance?: number
     terrainType?: string
-    terrainPaceFactor?: number
-    plannedPace?: string // 计划配速
+    terrainPaceFactor?: number // 地形复杂度系数α
     sectionTime?: number
     estimatedTime: string
     supplyStrategy: string
@@ -110,7 +112,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const marathonPace = parsePace(member.marathonPace || "6:00/km")
+    // 获取平路基准配速P0（优先使用flatBaselinePace，否则使用marathonPace）
+    const flatBaselinePace = parsePace(member.flatBaselinePace || member.marathonPace || "6:00/km")
+    const vo2Max = member.vo2Max
     const checkpoints = trail.checkpoints as any[]
     const terrainPaceFactors = member.terrainPaceFactors as any
 
@@ -140,7 +144,10 @@ export async function POST(request: NextRequest) {
       electrolytePowder
     )
 
-    // 解析计划配速（如果提供）
+    // 计算爬升损耗系数k（基于VO2Max）
+    const elevationLossCoefficient = calculateElevationLossCoefficient(vo2Max)
+
+    // 解析计划配速（如果提供）- 用于备用方案
     const plannedPaceMinutes = plannedPace ? parsePace(plannedPace) : null
 
     // 计算每个CP点的时间和补给策略
@@ -150,26 +157,27 @@ export async function POST(request: NextRequest) {
     const checkpointResults = checkpoints.map((cp) => {
       accumulatedDistance += cp.distance
 
-      // 计算爬升等效距离（m）= 爬升（m）* 10，转换为km
-      const elevationEquivalentDistance = cp.elevation * 10 / 1000 // 转换为km
-
-      // 获取路段配速系数
-      let terrainFactor = 1.0
+      // 获取地形复杂度系数α
+      let terrainComplexityFactor = 1.0
       if (terrainPaceFactors && cp.terrainType) {
         const factorKey = TERRAIN_TYPE_TO_FACTOR_KEY[cp.terrainType as keyof typeof TERRAIN_TYPE_TO_FACTOR_KEY]
-        terrainFactor = factorKey ? terrainPaceFactors[factorKey] || 1.0 : 1.0
+        terrainComplexityFactor = factorKey ? terrainPaceFactors[factorKey] || 1.0 : 1.0
       }
 
-      // 计算算法配速（仅用于回退）
-      const sectionPace = parsePace(member.marathonPace || "6:00/km")
+      // 使用新公式计算分段用时：Ti = (Di × P0 + Ei × k) × α
+      // Di: 分段距离（km）
+      // P0: 平路基准配速（分钟/公里）
+      // Ei: 分段爬升（m）
+      // k: 爬升损耗系数（秒/米）
+      // α: 地形复杂度系数
+      const sectionTime = calculateSegmentTime(
+        cp.distance, // Di
+        flatBaselinePace, // P0
+        cp.elevation, // Ei
+        elevationLossCoefficient, // k
+        terrainComplexityFactor // α
+      )
 
-      // 优先使用CP的独立计划配速，如果没有则使用全局计划配速，最后使用算法配速
-      const cpPlannedPace = checkpointPaces?.[cp.id]
-      const cpPlannedPaceMinutes = cpPlannedPace ? parsePace(cpPlannedPace) : null
-      const actualSectionPace = cpPlannedPaceMinutes ?? plannedPaceMinutes ?? sectionPace
-
-      // 分段用时 = (本段距离 + 爬升等效距离) * 计划配速 * 路段系数
-      const sectionTime = (cp.distance + elevationEquivalentDistance) * actualSectionPace * terrainFactor
       accumulatedTime += sectionTime
 
       const isSupplyPoint = accumulatedDistance % 5 < 2.5
@@ -218,8 +226,7 @@ export async function POST(request: NextRequest) {
         elevation: Number(cp.elevation.toFixed(2)),
         downhillDistance: cp.downhillDistance ? Number(cp.downhillDistance.toFixed(2)) : undefined,
         terrainType: cp.terrainType || "未知",
-        terrainPaceFactor: Number(terrainFactor.toFixed(2)),
-        plannedPace: cpPlannedPace || plannedPace || undefined, // 计划配速（优先使用CP独立配速）
+        terrainPaceFactor: Number(terrainComplexityFactor.toFixed(2)), // 地形复杂度系数α
         sectionTime: Number(sectionTime.toFixed(2)),
         estimatedTime: formatTime(accumulatedTime),
         supplyStrategy: isSupplyPoint ? "补给点" : "通过点",
@@ -262,7 +269,8 @@ export async function POST(request: NextRequest) {
     const result: PredictionResult = {
       estimatedTime: formatTime(accumulatedTime),
       estimatedPace: formatPace(accumulatedTime / totalDistance),
-      plannedPace: plannedPace || undefined, // 计划配速
+      flatBaselinePace: formatPace(flatBaselinePace), // 平路基准配速P0
+      elevationLossCoefficient: Number(elevationLossCoefficient.toFixed(2)), // 爬升损耗系数k
       checkpoints: checkpointResults,
       overallSupplyStrategy,
       hourlyEnergyNeeds,

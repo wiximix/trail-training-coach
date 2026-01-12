@@ -404,16 +404,16 @@ export default function EditTrailPage({ params }: { params: Promise<{ id: string
                         CP点
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                        段落距离 (km)
+                        分段距离 Di (km)
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                        爬升量 (m)
+                        分段爬升 Ei (m)
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                         下坡距离 (m)
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                        路段类型
+                        地形类型
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                         每100米爬升 (m)

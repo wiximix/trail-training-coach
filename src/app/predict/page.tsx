@@ -16,6 +16,8 @@ interface Member {
   id: string
   name: string
   marathonPace?: string
+  flatBaselinePace?: string // 平路基准配速P0
+  vo2Max?: number // 最大摄氧量（用于计算k）
   crampFrequency?: string
   expectedSweatRate?: string
   preferredSupplyTypes?: string[]
@@ -36,15 +38,15 @@ interface Trail {
 interface PredictionResult {
   estimatedTime: string
   estimatedPace: string
-  plannedPace?: string // 计划配速
+  flatBaselinePace: string // 平路基准配速P0
+  elevationLossCoefficient: number // 爬升损耗系数k（秒/米）
   checkpoints: Array<{
     id: number
-    distance: number
-    elevation: number
+    distance: number // 分段距离Di（km）
+    elevation: number // 分段爬升Ei（m）
     downhillDistance?: number
     terrainType?: string
-    terrainPaceFactor?: number
-    plannedPace?: string // 计划配速
+    terrainPaceFactor?: number // 地形复杂度系数α
     sectionTime?: number
     estimatedTime: string
     supplyStrategy: string
@@ -90,14 +92,11 @@ export default function PredictPage() {
   const [predicting, setPredicting] = useState(false)
   const [error, setError] = useState("")
   const [result, setResult] = useState<PredictionResult | null>(null)
-  const [checkpointPaces, setCheckpointPaces] = useState<Record<number, string>>({}) // 存储每个CP的计划配速（MMSS格式）
-  const [localCheckpointResults, setLocalCheckpointResults] = useState<any[]>([]) // 本地计算的分段结果
   const [sidebarExpanded, setSidebarExpanded] = useState(true) // 侧边栏展开状态
 
   const [selectedMemberId, setSelectedMemberId] = useState("")
   const [selectedTrailId, setSelectedTrailId] = useState("")
   const [expectedSweatRate, setExpectedSweatRate] = useState("")
-  const [plannedPace, setPlannedPace] = useState("") // 计划配速（MMSS格式）
 
   // 补给含量输入
   const [gelCarbs, setGelCarbs] = useState("100")
@@ -109,18 +108,6 @@ export default function PredictPage() {
   // 动态计算的能量需求和补给份数
   const [dynamicHourlyEnergyNeeds, setDynamicHourlyEnergyNeeds] = useState<HourlyEnergyNeeds | null>(null)
   const [dynamicSupplyDosages, setDynamicSupplyDosages] = useState<SupplyDosages | null>(null)
-
-  // 监听全局计划配速变化，实时更新分段用时
-  useEffect(() => {
-    if (result && plannedPace) {
-      const updatedCheckpoints = recalculateSectionTimes(
-        checkpointPaces,
-        result.checkpoints,
-        plannedPace
-      )
-      setLocalCheckpointResults(updatedCheckpoints)
-    }
-  }, [plannedPace])
 
   // 监听expectedSweatRate变化，动态更新每小时能量需求
   useEffect(() => {
@@ -149,126 +136,6 @@ export default function PredictPage() {
     )
     setDynamicSupplyDosages(supplyDosages)
   }, [dynamicHourlyEnergyNeeds, gelCarbs, saltElectrolytes, electrolytePowder])
-
-  // MMSS格式转分钟（例如：630 -> 6.5分钟）
-  const mmssToMinutes = (mmss: string): number => {
-    const num = parseInt(mmss, 10)
-    if (isNaN(num)) return 0
-    const minutes = Math.floor(num / 100)
-    const seconds = num % 100
-    return minutes + seconds / 60
-  }
-
-  // 分钟转MMSS格式（例如：6.5 -> "630"）
-  const minutesToMMSS = (minutes: number): string => {
-    const mins = Math.floor(minutes)
-    const secs = Math.round((minutes - mins) * 60)
-    return `${mins}${secs.toString().padStart(2, '0')}`
-  }
-
-  // 实时计算分段用时和预计时间
-  const recalculateSectionTimes = (currentCheckpointPaces: Record<number, string>, originalCheckpoints: any[], originalPlannedPace: string) => {
-    let accumulatedTime = 0
-    const updatedCheckpoints = originalCheckpoints.map((cp, index) => {
-      // 获取CP的计划配速（优先级：CP独立 > 全局）
-      const cpPaceMMSS = currentCheckpointPaces[cp.id] || originalPlannedPace
-      const sectionPaceMinutes = cpPaceMMSS ? mmssToMinutes(cpPaceMMSS) : null
-
-      if (!sectionPaceMinutes) {
-        // 如果没有计划配速，使用原来的sectionTime
-        accumulatedTime += (cp.sectionTime || 0)
-        return { ...cp }
-      }
-
-      // 计算爬升等效距离（m）= 爬升（m）* 10，转换为km
-      const elevationEquivalentDistance = cp.elevation * 10 / 1000
-
-      // 获取路段配速系数
-      const terrainFactor = cp.terrainPaceFactor || 1.0
-
-      // 分段用时 = (本段距离 + 爬升等效距离) * 计划配速 * 路段系数
-      const sectionTime = (cp.distance + elevationEquivalentDistance) * sectionPaceMinutes * terrainFactor
-      accumulatedTime += sectionTime
-
-      // 转换累计时间为时间格式
-      const totalHours = Math.floor(accumulatedTime / 60)
-      const totalMinutes = Math.floor(accumulatedTime % 60)
-      const totalSeconds = Math.round((accumulatedTime % 1) * 60)
-      const estimatedTime = `${totalHours.toString().padStart(2, '0')}:${totalMinutes.toString().padStart(2, '0')}:${totalSeconds.toString().padStart(2, '0')}`
-
-      return {
-        ...cp,
-        sectionTime: Number(sectionTime.toFixed(1)),
-        estimatedTime
-      }
-    })
-
-    return updatedCheckpoints
-  }
-
-  // 处理CP计划配速修改
-  const handleCheckpointPaceChange = (cpId: number, value: string) => {
-    const updatedPaces = { ...checkpointPaces, [cpId]: value }
-    setCheckpointPaces(updatedPaces)
-
-    // 实时重新计算
-    if (result) {
-      const updatedCheckpoints = recalculateSectionTimes(
-        updatedPaces,
-        result.checkpoints,
-        plannedPace || ""
-      )
-      setLocalCheckpointResults(updatedCheckpoints)
-    }
-  }
-
-  // 应用全局计划配速到所有CP点
-  const handleApplyGlobalPace = () => {
-    if (!plannedPace || !result) {
-      return
-    }
-
-    // 创建一个新的checkpointPaces对象，所有CP都使用全局计划配速
-    const updatedPaces: Record<number, string> = {}
-    result.checkpoints.forEach((cp) => {
-      updatedPaces[cp.id] = plannedPace
-    })
-
-    setCheckpointPaces(updatedPaces)
-
-    // 实时重新计算
-    const updatedCheckpoints = recalculateSectionTimes(
-      updatedPaces,
-      result.checkpoints,
-      plannedPace
-    )
-    setLocalCheckpointResults(updatedCheckpoints)
-  }
-
-  // 获取实际配速（用于tooltip显示）
-  const getActualPaceForTooltip = (cp: any): string => {
-    // 优先使用用户输入的CP计划配速
-    if (checkpointPaces[cp.id]) {
-      const mins = Math.floor(parseInt(checkpointPaces[cp.id]) / 100)
-      const secs = parseInt(checkpointPaces[cp.id]) % 100
-      return `${mins}分${secs}秒/公里`
-    }
-    // 其次使用全局计划配速
-    if (plannedPace) {
-      const mins = Math.floor(parseInt(plannedPace) / 100)
-      const secs = parseInt(plannedPace) % 100
-      return `${mins}分${secs}秒/公里`
-    }
-    // 最后使用后端返回的计划配速
-    if (cp.plannedPace) {
-      // 后端返回的是 "6:30/km" 格式，可以解析为 "6分30秒/公里"
-      const match = cp.plannedPace.match(/(\d+):(\d+)/)
-      if (match) {
-        return `${match[1]}分${match[2]}秒/公里`
-      }
-    }
-    return "算法预测配速"
-  }
 
   useEffect(() => {
     fetchData()
@@ -308,26 +175,6 @@ export default function PredictPage() {
     setResult(null)
 
     try {
-      // 将MMSS格式转换为标准格式（如"630" -> "6:30/km"）
-      const convertPaceToStandard = (mmss: string): string => {
-        if (!mmss) return ""
-        const minutes = mmssToMinutes(mmss)
-        const mins = Math.floor(minutes)
-        const secs = Math.round((minutes - mins) * 60)
-        return `${mins}:${secs.toString().padStart(2, '0')}/km`
-      }
-
-      // 转换全局计划配速
-      const standardPlannedPace = plannedPace ? convertPaceToStandard(plannedPace) : undefined
-
-      // 转换每个CP的计划配速
-      const standardCheckpointPaces: Record<number, string> = {}
-      Object.entries(checkpointPaces).forEach(([cpId, pace]) => {
-        if (pace) {
-          standardCheckpointPaces[parseInt(cpId)] = convertPaceToStandard(pace)
-        }
-      })
-
       const response = await fetch("/api/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -335,8 +182,6 @@ export default function PredictPage() {
           memberId: selectedMemberId,
           trailId: selectedTrailId,
           expectedSweatRate: expectedSweatRate || undefined,
-          plannedPace: standardPlannedPace,
-          checkpointPaces: Object.keys(standardCheckpointPaces).length > 0 ? standardCheckpointPaces : undefined,
           gelCarbs: gelCarbs ? Number(gelCarbs) : undefined,
           saltElectrolytes: saltElectrolytes ? Number(saltElectrolytes) : undefined,
           electrolytePowder: electrolytePowder ? Number(electrolytePowder) : undefined,
@@ -348,23 +193,6 @@ export default function PredictPage() {
       const data = await response.json()
       if (data.success) {
         setResult(data.data)
-        // 初始化每个CP的计划配速（转换为MMSS格式）
-        const initialPaces: Record<number, string> = {}
-        data.data.checkpoints.forEach((cp: any) => {
-          // 如果CP有独立计划配速，使用它；否则使用全局计划配速
-          const paceToConvert = cp.plannedPace || data.data.plannedPace || ""
-          if (paceToConvert) {
-            // 从"6:30/km"转换为"630"
-            const match = paceToConvert.match(/(\d+):(\d+)/)
-            if (match) {
-              initialPaces[cp.id] = `${match[1]}${match[2]}`
-            }
-          } else {
-            initialPaces[cp.id] = ""
-          }
-        })
-        setCheckpointPaces(initialPaces)
-        setLocalCheckpointResults(data.data.checkpoints)
       } else {
         console.log(data)
         setError(data.error || "预测失败")
@@ -433,7 +261,8 @@ export default function PredictPage() {
                 <option value="">请选择成员</option>
                 {members.map((member) => (
                   <option key={member.id} value={member.id}>
-                    {member.name} {member.marathonPace ? `(${member.marathonPace})` : ""}
+                    {member.name} {member.flatBaselinePace ? `(P0: ${member.flatBaselinePace})` : member.marathonPace ? `(${member.marathonPace})` : ""}
+                    {member.vo2Max ? `(VO2Max: ${member.vo2Max} ml/kg/min)` : ""}
                   </option>
                 ))}
               </select>
@@ -482,25 +311,6 @@ export default function PredictPage() {
               </select>
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 如果不选择，将使用成员数据中的默认值
-              </p>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                计划配速
-              </label>
-              <input
-                type="text"
-                value={plannedPace}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, '') // 只允许数字
-                  setPlannedPace(value)
-                }}
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                placeholder="例如: 630 代表 6分30秒"
-              />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                输入目标配速，格式为MMSS（如630代表6分30秒每公里）。留空则使用预测配速
               </p>
             </div>
 
@@ -579,22 +389,13 @@ export default function PredictPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={handlePredict}
-                disabled={predicting}
-                className="rounded-lg bg-purple-600 px-6 py-3 text-white font-medium hover:bg-purple-700 disabled:bg-gray-400"
-              >
-                {predicting ? "预测中..." : "开始预测"}
-              </button>
-              <button
-                onClick={handleApplyGlobalPace}
-                disabled={!result || !plannedPace}
-                className="rounded-lg bg-green-600 px-6 py-3 text-white font-medium hover:bg-green-700 disabled:bg-gray-400"
-              >
-                应用计划配速
-              </button>
-            </div>
+            <button
+              onClick={handlePredict}
+              disabled={predicting}
+              className="w-full rounded-lg bg-purple-600 px-6 py-3 text-white font-medium hover:bg-purple-700 disabled:bg-gray-400"
+            >
+              {predicting ? "预测中..." : "开始预测"}
+            </button>
           </div>
         </div>
       </aside>
@@ -649,6 +450,29 @@ export default function PredictPage() {
                       <h4 className="mb-2 font-medium text-gray-900 dark:text-white">预计平均配速</h4>
                       <p className="text-3xl font-bold text-green-600 dark:text-green-400">{result.estimatedPace}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">分钟/KM</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">算法参数</h3>
+                  <div className="rounded-lg bg-gray-50 dark:bg-gray-700/50 p-4">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <h4 className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">平路基准配速（P0）</h4>
+                        <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{result.flatBaselinePace}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">有氧耐力区间的平均配速</p>
+                      </div>
+                      <div>
+                        <h4 className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">爬升损耗系数（k）</h4>
+                        <p className="text-xl font-bold text-orange-600 dark:text-orange-400">{result.elevationLossCoefficient}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">秒/米，由VO2Max决定</p>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        <strong>计算公式：</strong> 分段用时 = (分段距离 × P0 + 分段爬升 × k) × 地形复杂度系数
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -778,28 +602,25 @@ export default function PredictPage() {
                             累计距离
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            本段距离
+                            分段距离 Di (km)
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            爬升
+                            分段爬升 Ei (m)
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             下坡
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            路段类型
+                            地形类型
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            路段系数
+                            地形复杂度系数 α
                           </th>
                           <th
                             className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300 cursor-help"
-                            title="计算公式：分段用时(分钟) = (本段距离(km) + 爬升等效距离(km)) × 计划配速(分钟/km) × 路段系数&#10;爬升等效距离(km) = 爬升(m) × 10 ÷ 1000"
+                            title="计算公式：Ti = (Di × P0 + Ei × k) × α&#10;Ti: 分段用时（分钟）&#10;Di: 分段距离（km）&#10;P0: 平路基准配速（分钟/km）&#10;Ei: 分段爬升（m）&#10;k: 爬升损耗系数（秒/米）&#10;α: 地形复杂度系数"
                           >
                             分段用时(分钟) ⚡
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            计划配速
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             预计时间
@@ -829,30 +650,12 @@ export default function PredictPage() {
                             <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.terrainPaceFactor?.toFixed(2) || "1.00"}</td>
                             <td
                               className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 cursor-help"
-                              title={`分段用时 = (${cp.distance}km + ${(cp.elevation * 10 / 1000).toFixed(3)}km) × ${getActualPaceForTooltip(cp)} × ${cp.terrainPaceFactor?.toFixed(2) || "1.00"}`}
+                              title={`分段用时 = (${cp.distance}km × ${result.flatBaselinePace} + ${cp.elevation}m × ${result.elevationLossCoefficient}s/m ÷ 60s) × ${cp.terrainPaceFactor?.toFixed(2) || "1.00"}`}
                             >
-                              {localCheckpointResults[cp.id - 1]?.sectionTime?.toFixed(1) || cp.sectionTime?.toFixed(1) || "0.0"}
+                              {cp.sectionTime?.toFixed(1) || "0.0"}
                             </td>
                             <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
-                              <input
-                                type="text"
-                                value={checkpointPaces[cp.id] || ""}
-                                onBlur={(e) => handleCheckpointPaceChange(cp.id, e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    e.currentTarget.blur()
-                                  }
-                                }}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(/\D/g, '') // 只允许数字
-                                  setCheckpointPaces({ ...checkpointPaces, [cp.id]: value })
-                                }}
-                                className="w-24 rounded border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="如630"
-                              />
-                            </td>
-                            <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
-                              {localCheckpointResults[cp.id - 1]?.estimatedTime || cp.estimatedTime}
+                              {cp.estimatedTime}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                               {cp.sectionSupply ? (

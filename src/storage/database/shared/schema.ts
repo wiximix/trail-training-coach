@@ -39,8 +39,10 @@ export const members = pgTable(
     lactateThresholdHeartRate: integer("lactate_threshold_heart_rate"), // 乳酸阈值心率
     lactateThresholdPace: varchar("lactate_threshold_pace", { length: 20 }), // 乳酸阈值配速 (如 "5:00/km")
     marathonPace: varchar("marathon_pace", { length: 20 }), // 马拉松配速 (如 "5:30/km")
+    vo2Max: integer("vo2_max"), // 最大摄氧量（ml/kg/min），用于计算爬升损耗系数
+    flatBaselinePace: varchar("flat_baseline_pace", { length: 20 }), // 平路基准配速P0（如 "5:30/km"），有氧耐力区间的平均配速
     // 路段配速系数（对不同类型路段的配速影响）
-    terrainPaceFactors: jsonb("terrain_pace_factors"), // 路段配速系数
+    terrainPaceFactors: jsonb("terrain_pace_factors"), // 地形复杂度系数（α）
     // 补给数据
     preferredSupplyTypes: jsonb("preferred_supply_types"), // 喜好补给类型 - 多选（数组）
     crampFrequency: varchar("cramp_frequency", { length: 20 }), // 比赛中抽经情况 - 单选

@@ -37,7 +37,7 @@ export interface TerrainPaceFactors {
 }
 
 /**
- * 默认路段配速系数
+ * 默认路段配速系数（地形复杂度系数α）
  */
 export const DEFAULT_TERRAIN_PACE_FACTORS: TerrainPaceFactors = {
   sand: 1.1,        // 沙地默认系数是1.1
@@ -46,6 +46,12 @@ export const DEFAULT_TERRAIN_PACE_FACTORS: TerrainPaceFactors = {
   stoneRoad: 1.0,
   steps: 1.0,
 }
+
+/**
+ * 默认爬升损耗系数k（秒/m）
+ * 当没有VO2Max数据时使用的默认值
+ */
+export const DEFAULT_ELEVATION_LOSS_COEFFICIENT = 12 // 默认每爬升1米增加12秒
 
 /**
  * 补给策略参数接口
@@ -344,6 +350,128 @@ export function calculateTrailPace(
   }
 
   return trailPace
+}
+
+// ============================================================================
+// 新成绩预测算法（2025-01-15更新）
+// ============================================================================
+
+/**
+ * 计算爬升损耗系数k（秒/m）
+ *
+ * 功能描述：
+ * 根据跑者的VO2Max（最大摄氧量）计算爬升损耗系数k。
+ * VO2Max越高，表示跑者有氧能力越强，爬升时的损耗越小（k值越小）。
+ *
+ * @param {number} [vo2Max] - 最大摄氧量（ml/kg/min，可选，范围30-80）
+ * @returns {number} 爬升损耗系数k（单位：秒/米，保留2位小数）
+ *
+ * 计算逻辑：
+ * - 基础公式：k = 20 - (VO2Max - 30) × 0.4
+ * - VO2Max范围：30-80 ml/kg/min
+ *   - VO2Max = 30（低水平）：k ≈ 20秒/m
+ *   - VO2Max = 50（中等水平）：k ≈ 12秒/m（默认值）
+ *   - VO2Max = 70（高水平）：k ≈ 4秒/m
+ *   - VO2Max = 80（精英水平）：k ≈ 0秒/m
+ * - 如果没有VO2Max数据，返回默认值12秒/m
+ * - 边界约束：k值范围 [0, 20]
+ *
+ * @example
+ * // 输入：vo2Max=50
+ * // 输出：12.00
+ * // 计算：k = 20 - (50 - 30) × 0.4 = 20 - 20 × 0.4 = 20 - 8 = 12
+ *
+ * @example
+ * // 输入：vo2Max=70
+ * // 输出：4.00
+ * // 计算：k = 20 - (70 - 30) × 0.4 = 20 - 40 × 0.4 = 20 - 16 = 4
+ */
+export function calculateElevationLossCoefficient(vo2Max?: number | null): number {
+  // 没有VO2Max数据时，返回默认值
+  if (!vo2Max) {
+    return DEFAULT_ELEVATION_LOSS_COEFFICIENT
+  }
+
+  // 边界约束：VO2Max范围30-80
+  const clampedVO2Max = Math.max(30, Math.min(80, vo2Max))
+
+  // 计算爬升损耗系数：k = 20 - (VO2Max - 30) × 0.4
+  const k = 20 - (clampedVO2Max - 30) * 0.4
+
+  // 保留2位小数
+  return Number(k.toFixed(2))
+}
+
+/**
+ * 计算分段用时（新核心算法）
+ *
+ * 功能描述：
+ * 使用新公式计算越野赛分段用时：Ti = (Di × P0 + Ei × k) × α
+ * 其中：
+ * - Di：分段距离（km）
+ * - P0：平路基准配速（分钟/公里）
+ * - Ei：分段爬升（m）- 累计爬升
+ * - k：爬升损耗系数（秒/m），需转换为分钟：k/60
+ * - α：地形复杂度系数
+ *
+ * @param {number} distance - 分段距离Di（单位：公里）
+ * @param {number} flatBaselinePace - 平路基准配速P0（单位：分钟/公里）
+ * @param {number} elevation - 分段爬升Ei（单位：米，累计爬升）
+ * @param {number} [elevationLossCoefficient] - 爬升损耗系数k（单位：秒/m，可选）
+ * @param {number} [terrainComplexityFactor] - 地形复杂度系数α（可选，默认1.0）
+ * @returns {number} 分段用时Ti（单位：分钟，保留2位小数）
+ *
+ * 计算逻辑：
+ * 1. 平路时间 = Di × P0
+ * 2. 爬升损耗时间 = Ei × k / 60（将秒转换为分钟）
+ * 3. 基础时间 = 平路时间 + 爬升损耗时间
+ * 4. 分段用时 = 基础时间 × α（地形复杂度系数）
+ *
+ * @example
+ * // 输入：distance=5.0, flatBaselinePace=6.0, elevation=100, elevationLossCoefficient=12, terrainComplexityFactor=1.1
+ * // 输出：39.20
+ * // 计算：
+ * //   平路时间 = 5.0 × 6.0 = 30分钟
+ * //   爬升损耗时间 = 100 × 12 / 60 = 20分钟
+ * //   基础时间 = 30 + 20 = 50分钟
+ * //   分段用时 = 50 × 1.1 = 55分钟
+ *
+ * @example
+ * // 输入：distance=10.0, flatBaselinePace=5.5, elevation=50, elevationLossCoefficient=4, terrainComplexityFactor=1.0
+ * // 输出：58.33
+ * // 计算：
+ * //   平路时间 = 10.0 × 5.5 = 55分钟
+ * //   爬升损耗时间 = 50 × 4 / 60 = 3.33分钟
+ * //   基础时间 = 55 + 3.33 = 58.33分钟
+ * //   分段用时 = 58.33 × 1.0 = 58.33分钟
+ */
+export function calculateSegmentTime(
+  distance: number,
+  flatBaselinePace: number,
+  elevation: number,
+  elevationLossCoefficient?: number | null,
+  terrainComplexityFactor?: number | null
+): number {
+  // 获取爬升损耗系数（默认值）
+  const k = elevationLossCoefficient || DEFAULT_ELEVATION_LOSS_COEFFICIENT
+
+  // 获取地形复杂度系数（默认1.0）
+  const alpha = terrainComplexityFactor || 1.0
+
+  // 平路时间 = Di × P0
+  const flatTime = distance * flatBaselinePace
+
+  // 爬升损耗时间 = Ei × k / 60（将秒转换为分钟）
+  const elevationLossTime = (elevation * k) / 60
+
+  // 基础时间 = 平路时间 + 爬升损耗时间
+  const baseTime = flatTime + elevationLossTime
+
+  // 分段用时 = 基础时间 × α
+  const segmentTime = baseTime * alpha
+
+  // 保留2位小数
+  return Number(segmentTime.toFixed(2))
 }
 
 // ============================================================================
