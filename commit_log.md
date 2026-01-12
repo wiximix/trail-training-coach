@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-12 | `9c721fba53d4fbd2775ee360036d9c8cfe15d792` | main | fix: 修复 useSearchParams Suspense 边界问题，解决 Next.js 16 构建错误 | 无 | .next/dev/static/chunks/[root-of-the-server]__0f0ba101._.css,.next/dev/static/chunks/[root-of-the-server]__0f0ba101._.css.map,.next/dev/static/chunks/src_app_globals_css_bad6b30c._.single.css,.next/dev/static/chunks/src_app_globals_css_bad6b30c._.single.css.map,next-env.d.ts,src/app/auth/login/LoginClient.tsx,src/app/auth/login/page.tsx,src/app/auth/reset-password/ResetPasswordClient.tsx,src/app/auth/reset-password/page.tsx,tsconfig.tsbuildinfo |
 | 2026-01-12 | `29f28e033840700aa61d5be52892d275b4ac1843` | main | auto saved your changes before deploy | 无 |  |
 | 2026-01-12 | `a054b76691de8a624eb6fe2ca85856502cbf9ea0` | main | fix: 修复 Next.js 16 动态路由参数类型问题及 TypeScript 错误 | 无 | src/app/api/teams/[id]/approve/route.ts,src/app/api/teams/[id]/leave/route.ts,src/app/api/teams/[id]/members/[userId]/route.ts,src/app/api/teams/[id]/members/route.ts,src/app/api/teams/[id]/reject/route.ts,src/app/api/teams/[id]/route.ts,src/app/reviews/page.tsx,tsconfig.tsbuildinfo |
 | 2026-01-12 | `ff65d4da047bb7147ef8ded062499bec8701a113` | main | auto saved your changes before deploy | 无 |  |
