@@ -38,13 +38,6 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
     marathonPace: "",
     vo2Max: "", // 最大摄氧量（VO2Max）
     flatBaselinePace: "", // 平路基准配速（P0）
-    terrainPaceFactors: {
-      sand: 1.1,
-      farmRoad: 1.0,
-      mountainRoad: 1.0,
-      stoneRoad: 1.0,
-      steps: 1.0,
-    },
     preferredSupplyTypes: [] as string[],
     crampFrequency: "",
     expectedSweatRate: "",
@@ -75,13 +68,6 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
           marathonPace: member.marathonPace || "",
           vo2Max: member.vo2Max?.toString() || "", // 最大摄氧量
           flatBaselinePace: member.flatBaselinePace || "", // 平路基准配速
-          terrainPaceFactors: (member.terrainPaceFactors as any) || {
-            sand: 1.1,
-            farmRoad: 1.0,
-            mountainRoad: 1.0,
-            stoneRoad: 1.0,
-            steps: 1.0,
-          },
           preferredSupplyTypes: (member.preferredSupplyTypes as string[]) || [],
           crampFrequency: member.crampFrequency || "",
           expectedSweatRate: member.expectedSweatRate || "",
@@ -348,121 +334,6 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                     className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 地形复杂度系数 */}
-          <div>
-            <h2 className="mb-4 text-xl font-semibold text-gray-900">地形复杂度系数（α）</h2>
-            <p className="mb-4 text-sm text-gray-600">
-              不同地形类型对配速的影响系数（通常取1.1~1.3），系数越大用时越长。默认值都是1，沙地默认值是1.1。
-            </p>
-            <div className="grid grid-cols-5 gap-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  沙地
-                </label>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  value={formData.terrainPaceFactors.sand}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      terrainPaceFactors: {
-                        ...formData.terrainPaceFactors,
-                        sand: Number(e.target.value),
-                      },
-                    })
-                  }
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  机耕道
-                </label>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  value={formData.terrainPaceFactors.farmRoad}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      terrainPaceFactors: {
-                        ...formData.terrainPaceFactors,
-                        farmRoad: Number(e.target.value),
-                      },
-                    })
-                  }
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  山路
-                </label>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  value={formData.terrainPaceFactors.mountainRoad}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      terrainPaceFactors: {
-                        ...formData.terrainPaceFactors,
-                        mountainRoad: Number(e.target.value),
-                      },
-                    })
-                  }
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  石铺路
-                </label>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  value={formData.terrainPaceFactors.stoneRoad}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      terrainPaceFactors: {
-                        ...formData.terrainPaceFactors,
-                        stoneRoad: Number(e.target.value),
-                      },
-                    })
-                  }
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  台阶
-                </label>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  value={formData.terrainPaceFactors.steps}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      terrainPaceFactors: {
-                        ...formData.terrainPaceFactors,
-                        steps: Number(e.target.value),
-                      },
-                    })
-                  }
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                />
               </div>
             </div>
           </div>

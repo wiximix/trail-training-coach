@@ -150,6 +150,10 @@ export type Trail = typeof trails.$inferSelect
 export type InsertTrail = z.infer<typeof insertTrailSchema>
 export type UpdateTrail = z.infer<typeof updateTrailSchema>
 
+export type TerrainType = typeof terrainTypes.$inferSelect
+export type InsertTerrainType = z.infer<typeof insertTerrainTypeSchema>
+export type UpdateTerrainType = z.infer<typeof updateTerrainTypeSchema>
+
 // Checkpoint 类型定义
 export interface Checkpoint {
   id: number
@@ -162,22 +166,52 @@ export interface Checkpoint {
   elevationFactor?: number // 爬升影响值（分钟/公里）
 }
 
-// 路段配速系数类型定义
+// 地形类型配置表（全局设置）
+export const terrainTypes = pgTable(
+  "terrain_types",
+  {
+    id: varchar("id", { length: 36 })
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 50 }).notNull().unique(), // 地形类型名称（如"沙地"、"机耕道"）
+    paceFactor: text("pace_factor").notNull(), // 地形复杂度系数α（存储为字符串以支持精确小数）
+    color: varchar("color", { length: 7 }).notNull(), // 颜色值（如"#F59E0B"）
+    icon: varchar("icon", { length: 50 }), // 图标标识（可选）
+    isActive: boolean("is_active").default(true).notNull(), // 是否启用
+    sortOrder: integer("sort_order").default(0).notNull(), // 排序序号
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+  }
+)
+
+// 地形类型配置相关的 Zod schemas
+export const insertTerrainTypeSchema = createCoercedInsertSchema(terrainTypes).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
+export const updateTerrainTypeSchema = createCoercedInsertSchema(terrainTypes)
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .partial()
+
+// 路段配速系数类型定义（从数据库动态获取）
 export interface TerrainPaceFactors {
-  sand: number // 沙地配速系数
-  farmRoad: number // 机耕道配速系数
-  mountainRoad: number // 山路配速系数
-  stoneRoad: number // 石铺路配速系数
-  steps: number // 台阶配速系数
+  [key: string]: number // 地形类型名称 -> 配速系数
 }
 
-// 默认路段配速系数
+// 默认路段配速系数（用于初始化）
 export const defaultTerrainPaceFactors: TerrainPaceFactors = {
-  sand: 1.1, // 沙地默认系数是1.1
-  farmRoad: 1.0,
-  mountainRoad: 1.0,
-  stoneRoad: 1.0,
-  steps: 1.0,
+  "沙地": 1.1, // 沙地默认系数是1.1
+  "机耕道": 1.0,
+  "山路": 1.0,
+  "石铺路": 1.0,
+  "台阶": 1.0,
 }
 
 // 复盘记录表

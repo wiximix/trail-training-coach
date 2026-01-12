@@ -26,25 +26,23 @@
 export type TerrainType = "沙地" | "机耕道" | "山路" | "石铺路" | "台阶"
 
 /**
- * 路段配速系数接口
+ * 路段配速系数接口（动态地形类型）
+ * 支持从系统设置中读取自定义地形类型及其系数
  */
 export interface TerrainPaceFactors {
-  sand: number       // 沙地配速系数
-  farmRoad: number  // 机耕道配速系数
-  mountainRoad: number  // 山路配速系数
-  stoneRoad: number  // 石铺路配速系数
-  steps: number     // 台阶配速系数
+  [terrainName: string]: number // 地形类型名称 -> 配速系数
 }
 
 /**
  * 默认路段配速系数（地形复杂度系数α）
+ * 用于系统初始化和降级处理
  */
 export const DEFAULT_TERRAIN_PACE_FACTORS: TerrainPaceFactors = {
-  sand: 1.1,        // 沙地默认系数是1.1
-  farmRoad: 1.0,
-  mountainRoad: 1.0,
-  stoneRoad: 1.0,
-  steps: 1.0,
+  "沙地": 1.1,        // 沙地默认系数是1.1
+  "机耕道": 1.0,
+  "山路": 1.0,
+  "石铺路": 1.0,
+  "台阶": 1.0,
 }
 
 /**
@@ -79,22 +77,6 @@ export interface SupplyDosages {
   gelsPerHour: number                // 能量胶每小时份数
   saltsPerHour: number               // 盐丸每小时份数
   electrolytePowderPerHour: number   // 电解质粉每小时份数
-}
-
-// ============================================================================
-// 路段类型映射
-// ============================================================================
-
-/**
- * 路段类型到配速系数key的映射
- * 用于将中文路段类型转换为英文key，方便访问对应的配速系数
- */
-export const TERRAIN_TYPE_TO_FACTOR_KEY: Record<TerrainType, keyof TerrainPaceFactors> = {
-  "沙地": "sand",
-  "机耕道": "farmRoad",
-  "山路": "mountainRoad",
-  "石铺路": "stoneRoad",
-  "台阶": "steps",
 }
 
 // ============================================================================
@@ -310,7 +292,7 @@ export function parsePace(paceStr: string): number {
  *
  * @param {number} marathonPace - 马拉松配速（单位：分钟/公里）
  * @param {number} elevation - 赛段总爬升量（单位：米，下坡为负数）
- * @param {string} terrainType - 路段类型（"沙地" | "机耕道" | "山路" | "石铺路" | "台阶"）
+ * @param {string} terrainType - 路段类型（如"沙地"、"机耕道"、"山路"等）
  * @param {TerrainPaceFactors} [terrainPaceFactors] - 路段配速系数（可选）
  * @returns {number} 越野赛配速（单位：分钟/公里）
  *
@@ -320,7 +302,7 @@ export function parsePace(paceStr: string): number {
  * 3. 下坡配速边界约束：不低于基础配速的7折
  *
  * @example
- * // 输入：marathonPace=6.0, elevation=96, terrainType="山路", terrainPaceFactors={...}
+ * // 输入：marathonPace=6.0, elevation=96, terrainType="山路", terrainPaceFactors={"山路": 1.0}
  * // 输出：6.48
  * // 计算：基础配速 = 6.0 + (96 ÷ 100) = 6.96，应用系数后 = 6.96 × 1.0 = 6.96
  */
@@ -338,8 +320,7 @@ export function calculateTrailPace(
 
   // 应用路段配速系数
   if (terrainPaceFactors && terrainType) {
-    const factorKey = TERRAIN_TYPE_TO_FACTOR_KEY[terrainType as TerrainType]
-    const factor = factorKey ? terrainPaceFactors[factorKey] || 1.0 : 1.0
+    const factor = terrainPaceFactors[terrainType] || DEFAULT_TERRAIN_PACE_FACTORS[terrainType] || 1.0
     trailPace = trailPace * factor
   }
 

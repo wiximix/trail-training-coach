@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { MemberManager, TrailManager } from "@/storage/database"
+import { MemberManager, TrailManager, getDb } from "@/storage/database"
 import {
   parsePace,
   generateSupplyStrategy,
@@ -7,13 +7,39 @@ import {
   calculateSupplyDosages,
   calculateElevationLossCoefficient,
   calculateSegmentTime,
-  TERRAIN_TYPE_TO_FACTOR_KEY,
   formatTime,
   formatPace,
+  type TerrainPaceFactors,
 } from "@/lib/trailAlgorithm"
+import { terrainTypes } from "@/storage/database/shared/schema"
+import { eq } from "drizzle-orm"
 
 const memberManager = new MemberManager()
 const trailManager = new TrailManager()
+
+/**
+ * 从数据库获取启用的地形类型系数
+ */
+async function getGlobalTerrainPaceFactors(): Promise<TerrainPaceFactors> {
+  try {
+    const db = await getDb()
+
+    const result = await db
+      .select()
+      .from(terrainTypes)
+      .where(eq(terrainTypes.isActive, true))
+
+    const factors: TerrainPaceFactors = {}
+    result.forEach((terrain: any) => {
+      factors[terrain.name] = parseFloat(terrain.paceFactor)
+    })
+
+    return factors
+  } catch (error) {
+    console.error("获取地形类型系数失败:", error)
+    return {}
+  }
+}
 
 interface PredictionRequest {
   memberId: string
@@ -112,11 +138,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // 获取全局地形类型系数
+    const globalTerrainPaceFactors = await getGlobalTerrainPaceFactors()
+
     // 获取平路基准配速P0（优先使用flatBaselinePace，否则使用marathonPace）
     const flatBaselinePace = parsePace(member.flatBaselinePace || member.marathonPace || "6:00/km")
     const vo2Max = member.vo2Max
     const checkpoints = trail.checkpoints as any[]
-    const terrainPaceFactors = member.terrainPaceFactors as any
 
     // 计算总距离和总爬升
     const totalDistance = checkpoints.reduce((sum, cp) => sum + cp.distance, 0)
@@ -157,12 +185,10 @@ export async function POST(request: NextRequest) {
     const checkpointResults = checkpoints.map((cp) => {
       accumulatedDistance += cp.distance
 
-      // 获取地形复杂度系数α
-      let terrainComplexityFactor = 1.0
-      if (terrainPaceFactors && cp.terrainType) {
-        const factorKey = TERRAIN_TYPE_TO_FACTOR_KEY[cp.terrainType as keyof typeof TERRAIN_TYPE_TO_FACTOR_KEY]
-        terrainComplexityFactor = factorKey ? terrainPaceFactors[factorKey] || 1.0 : 1.0
-      }
+      // 获取地形复杂度系数α（从全局设置中读取）
+      const terrainComplexityFactor = cp.terrainType && globalTerrainPaceFactors[cp.terrainType]
+        ? globalTerrainPaceFactors[cp.terrainType]
+        : 1.0
 
       // 使用新公式计算分段用时：Ti = (Di × P0 + Ei × k) × α
       // Di: 分段距离（km）

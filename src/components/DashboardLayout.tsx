@@ -30,6 +30,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { href: "/predict", label: "成绩预测" },
     { href: "/reviews", label: "训练复盘" },
     { href: "/teams", label: "跑团" },
+    { href: "/settings", label: "系统设置" },
   ]
 
   return (
