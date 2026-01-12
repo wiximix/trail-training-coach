@@ -6,9 +6,10 @@ const teamManager = new TeamManager()
 // POST /api/teams/[id]/approve - 审批申请（通过）
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { userId } = body
 
@@ -19,7 +20,7 @@ export async function POST(
       )
     }
 
-    const member = await teamManager.approveApplication(params.id, userId)
+    const member = await teamManager.approveApplication(id, userId)
 
     if (!member) {
       return NextResponse.json(

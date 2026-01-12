@@ -221,7 +221,7 @@ export default function ReviewsPage() {
                               <TrendingUp className="h-4 w-4" />
                               <span>
                                 {performance.isFaster ? "快" : "慢"}{" "}
-                                {Math.abs(percentage).toFixed(1)}%
+                                {Math.abs(performance.percentage).toFixed(1)}%
                               </span>
                             </div>
                           </div>

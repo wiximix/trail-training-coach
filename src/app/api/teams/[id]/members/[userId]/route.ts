@@ -6,10 +6,11 @@ const teamManager = new TeamManager()
 // DELETE /api/teams/[id]/members/[userId] - 移除成员
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; userId: string } }
+  { params }: { params: Promise<{ id: string; userId: string }> }
 ) {
   try {
-    const success = await teamManager.removeMember(params.id, params.userId)
+    const { id, userId } = await params
+    const success = await teamManager.removeMember(id, userId)
 
     if (!success) {
       return NextResponse.json(

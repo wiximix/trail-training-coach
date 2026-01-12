@@ -6,10 +6,11 @@ const teamManager = new TeamManager()
 // GET /api/teams/[id] - 获取跑团详情
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const team = await teamManager.getTeamById(params.id)
+    const { id } = await params
+    const team = await teamManager.getTeamById(id)
 
     if (!team) {
       return NextResponse.json(
@@ -31,11 +32,12 @@ export async function GET(
 // PUT /api/teams/[id] - 更新跑团
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
-    const team = await teamManager.updateTeam(params.id, body)
+    const team = await teamManager.updateTeam(id, body)
 
     if (!team) {
       return NextResponse.json(
@@ -57,10 +59,11 @@ export async function PUT(
 // DELETE /api/teams/[id] - 删除跑团
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const success = await teamManager.deleteTeam(params.id)
+    const { id } = await params
+    const success = await teamManager.deleteTeam(id)
 
     if (!success) {
       return NextResponse.json(

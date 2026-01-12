@@ -6,13 +6,14 @@ const teamManager = new TeamManager()
 // GET /api/teams/[id]/members - 获取跑团成员列表
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const searchParams = request.nextUrl.searchParams
     const status = searchParams.get("status") || undefined
 
-    const members = await teamManager.getTeamMembers(params.id, { status })
+    const members = await teamManager.getTeamMembers(id, { status })
 
     // 获取每个成员的用户信息
     const db = await import("@/storage/database/db").then((m) => m.getDb())
@@ -42,9 +43,10 @@ export async function GET(
 // POST /api/teams/[id]/members - 申请加入跑团
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { userId } = body
 
@@ -55,7 +57,7 @@ export async function POST(
       )
     }
 
-    const member = await teamManager.applyToTeam(params.id, userId)
+    const member = await teamManager.applyToTeam(id, userId)
 
     return NextResponse.json(
       { success: true, data: member, message: "申请已提交，请等待审核" },
