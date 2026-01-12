@@ -113,8 +113,14 @@ export default function PredictPage() {
   // 自定义平路基准配速P0（全局）
   const [customFlatBaselinePace, setCustomFlatBaselinePace] = useState("")
 
+  // 自定义爬升损耗系数k（全局）
+  const [customElevationLossCoefficient, setCustomElevationLossCoefficient] = useState("1")
+
   // 每个CP点的自定义P0
   const [checkpointP0s, setCheckpointP0s] = useState<Record<number, string>>({})
+
+  // 每个CP点的自定义k值
+  const [checkpointKs, setCheckpointKs] = useState<Record<number, string>>({})
 
   // 实时计算的预计时间
   const [recalcTimes, setRecalcTimes] = useState<Record<number, string>>({})
@@ -147,7 +153,7 @@ export default function PredictPage() {
     setDynamicSupplyDosages(supplyDosages)
   }, [dynamicHourlyEnergyNeeds, gelCarbs, saltElectrolytes, electrolytePowder])
 
-  // 监听CP点P0变化，重新计算预计时间
+  // 监听CP点P0和k值变化，重新计算预计时间
   useEffect(() => {
     if (!result) return
 
@@ -156,7 +162,8 @@ export default function PredictPage() {
 
     result.checkpoints.forEach((cp, index) => {
       const effectiveP0 = getEffectiveP0(cp.id, result)
-      const sectionTime = recalculateWithCustomP0(cp.id, result, effectiveP0)
+      const effectiveK = getEffectiveK(cp.id, result)
+      const sectionTime = recalculateWithCustomParams(cp.id, result, effectiveP0, effectiveK)
       accumulatedMinutes += sectionTime
 
       // 将累计分钟转换为HH:MM:SS格式
@@ -167,20 +174,28 @@ export default function PredictPage() {
     })
 
     setRecalcTimes(newTimes)
-  }, [checkpointP0s, customFlatBaselinePace, result])
+  }, [checkpointP0s, checkpointKs, customFlatBaselinePace, customElevationLossCoefficient, result])
 
-  // 预测完成后，初始化CP点P0输入框的值
+  // 预测完成后，初始化CP点P0和k值输入框的值
   useEffect(() => {
     if (!result) return
 
     const initialP0s: Record<number, string> = {}
+    const initialKs: Record<number, string> = {}
     const defaultP0 = parseMMSSPace(result.flatBaselinePace.replace(/[:/]/g, '')) || 6.0
+    const defaultK = result.elevationLossCoefficient
 
     result.checkpoints.forEach(cp => {
       initialP0s[cp.id] = formatMinutesToMMSS(defaultP0)
+      initialKs[cp.id] = defaultK.toString()
     })
 
     setCheckpointP0s(initialP0s)
+    setCheckpointKs(initialKs)
+
+    // 清空侧边栏自定义值
+    setCustomFlatBaselinePace("")
+    setCustomElevationLossCoefficient("")
   }, [result])
 
   useEffect(() => {
@@ -292,6 +307,14 @@ export default function PredictPage() {
     }))
   }
 
+  // 更新某个CP点的k值
+  const handleCheckpointKChange = (cpId: number, value: string) => {
+    setCheckpointKs(prev => ({
+      ...prev,
+      [cpId]: value
+    }))
+  }
+
   // 获取有效的P0值（优先级：CP点自定义 > 全局自定义 > 预测值）
   const getEffectiveP0 = (cpId: number, result: PredictionResult): number => {
     // 优先使用CP点自定义P0
@@ -310,21 +333,61 @@ export default function PredictPage() {
     return parseMMSSPace(result.flatBaselinePace.replace(/[:/]/g, '')) || 6.0
   }
 
-  // 使用自定义P0重新计算分段用时
-  const recalculateWithCustomP0 = (cpId: number, result: PredictionResult, newP0: number): number => {
+  // 获取有效的k值（优先级：CP点自定义 > 全局自定义 > 预测值）
+  const getEffectiveK = (cpId: number, result: PredictionResult): number => {
+    // 优先使用CP点自定义k
+    const cpCustomK = checkpointKs[cpId] ? parseFloat(checkpointKs[cpId]) : null
+    if (cpCustomK !== null && !isNaN(cpCustomK)) {
+      return cpCustomK
+    }
+
+    // 其次使用全局自定义k
+    const globalCustomK = customElevationLossCoefficient ? parseFloat(customElevationLossCoefficient) : null
+    if (globalCustomK !== null && !isNaN(globalCustomK)) {
+      return globalCustomK
+    }
+
+    // 最后使用预测的k值
+    return result.elevationLossCoefficient
+  }
+
+  // 使用自定义P0和k重新计算分段用时
+  const recalculateWithCustomParams = (cpId: number, result: PredictionResult, newP0: number, newK: number): number => {
     const checkpoint = result.checkpoints.find(cp => cp.id === cpId)
     if (!checkpoint) return 0
 
-    const k = result.elevationLossCoefficient
     const alpha = checkpoint.terrainPaceFactor || 1.0
 
     return calculateSegmentTime(
       checkpoint.distance,
       newP0,
       checkpoint.elevation,
-      k,
+      newK,
       alpha
     )
+  }
+
+  // 应用侧边栏参数到CP点列表
+  const applySidebarParams = () => {
+    if (!result) return
+
+    const newP0s: Record<number, string> = {}
+    const newKs: Record<number, string> = {}
+
+    result.checkpoints.forEach(cp => {
+      // 应用侧边栏的P0值（如果有值）
+      if (customFlatBaselinePace) {
+        newP0s[cp.id] = customFlatBaselinePace
+      }
+
+      // 应用侧边栏的k值
+      if (customElevationLossCoefficient) {
+        newKs[cp.id] = customElevationLossCoefficient
+      }
+    })
+
+    setCheckpointP0s(prev => ({ ...prev, ...newP0s }))
+    setCheckpointKs(prev => ({ ...prev, ...newKs }))
   }
 
   if (loading) {
@@ -431,6 +494,26 @@ export default function PredictPage() {
 
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                爬升损耗系数 k (秒/米)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                value={customElevationLossCoefficient}
+                onChange={(e) => {
+                  setCustomElevationLossCoefficient(e.target.value)
+                }}
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                placeholder="如 1"
+              />
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                留空则使用预测值，默认1秒/米
+              </p>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 比赛日预计出汗量
               </label>
               <select
@@ -523,6 +606,14 @@ export default function PredictPage() {
                 </div>
               </div>
             </div>
+
+            <button
+              onClick={applySidebarParams}
+              disabled={!result}
+              className="w-full rounded-lg bg-green-600 px-6 py-3 text-white font-medium hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              应用参数
+            </button>
 
             <button
               onClick={handlePredict}
@@ -754,6 +845,9 @@ export default function PredictPage() {
                           <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             平路基准配速 P0
                           </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
+                            爬升损耗系数 k
+                          </th>
                           <th
                             className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300 cursor-help"
                             title="计算公式：Ti = (Di × P0 + Ei × k) × α&#10;Ti: 分段用时（分钟）&#10;Di: 分段距离（km）&#10;P0: 平路基准配速（分钟/km）&#10;Ei: 分段爬升（m）&#10;k: 爬升损耗系数（秒/米）&#10;α: 地形复杂度系数"
@@ -796,11 +890,22 @@ export default function PredictPage() {
                                 maxLength={4}
                               />
                             </td>
+                            <td className="px-4 py-3">
+                              <input
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                value={checkpointKs[cp.id] || result.elevationLossCoefficient}
+                                onChange={(e) => handleCheckpointKChange(cp.id, e.target.value)}
+                                className="w-16 rounded border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                placeholder="秒/米"
+                              />
+                            </td>
                             <td
                               className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 cursor-help"
-                              title={`分段用时 = (${cp.distance}km × ${getEffectiveP0(cp.id, result).toFixed(2)} + ${cp.elevation}m × ${result.elevationLossCoefficient}s/m ÷ 60s) × ${cp.terrainPaceFactor?.toFixed(2) || "1.00"}`}
+                              title={`分段用时 = (${cp.distance}km × ${getEffectiveP0(cp.id, result).toFixed(2)} + ${cp.elevation}m × ${getEffectiveK(cp.id, result)}s/m ÷ 60s) × ${cp.terrainPaceFactor?.toFixed(2) || "1.00"}`}
                             >
-                              {recalculateWithCustomP0(cp.id, result, getEffectiveP0(cp.id, result)).toFixed(1)}
+                              {recalculateWithCustomParams(cp.id, result, getEffectiveP0(cp.id, result), getEffectiveK(cp.id, result)).toFixed(1)}
                             </td>
                             <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
                               {recalcTimes[cp.id] || cp.estimatedTime}
