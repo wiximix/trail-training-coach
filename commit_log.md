@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-12 | `de0994ecd25c173f6f691103e2858514a83e9a2c` | main | fix: 修复预测参数传递和更新问题 | 无 | src/app/predict/page.tsx,tsconfig.tsbuildinfo |
 | 2026-01-12 | `9518da9ebb95cb45aecf7274c279df5803215dc2` | main | feat: 将地形复杂系数改为全局设置，新增系统设置页面 | 无 | src/app/api/predict/route.ts,src/app/api/terrain-types/[id]/route.ts,src/app/api/terrain-types/route.ts,src/app/members/[id]/edit/page.tsx,src/app/members/new/page.tsx,src/app/settings/page.tsx,src/components/DashboardLayout.tsx,src/lib/trailAlgorithm.ts,src/storage/database/index.ts,src/storage/database/shared/schema.ts,tsconfig.tsbuildinfo |
 | 2026-01-12 | `adfed6e1aeb42e8d42e1915fc720a9e572a761f0` | main | fix: 修复预测参数保留和默认值设置问题 | 无 | tsconfig.tsbuildinfo |
 | 2026-01-12 | `5db43d8348d66c4e0acdd7c89ae390bc9f70cd98` | main | feat: 优化预测参数侧边栏和CP点列表交互功能 | 无 | tsconfig.tsbuildinfo |
