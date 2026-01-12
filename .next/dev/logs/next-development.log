@@ -1,143 +1,118 @@
-[00:00:01.523] Server  LOG      ✓ Ready in 1161ms
-[00:06:43.247] Server  WARN    Error: Route "/api/teams/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
-[00:06:43.294] Server  WARN    Error: Route "/api/teams/[id]/members" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
-[00:06:43.583] Server  WARN    Error: Route "/api/teams/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
-[00:06:43.677] Server  WARN    Error: Route "/api/teams/[id]/members" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
-[00:08:17.281] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
-[00:08:30.888] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
-[00:09:12.944] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
-[00:11:03.304] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:11:04.269] Server  WARN     ⚠ Cross origin request detected from 81e10d44-2524-46cb-8fca-07b83771b930.dev.coze.site to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+[00:00:01.640] Server  LOG      ✓ Ready in 1186ms
+[00:00:08.794] Server  WARN     ⚠ Cross origin request detected from 81e10d44-2524-46cb-8fca-07b83771b930.dev.coze.site to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
-[00:11:05.027] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-https://react.dev/link/hydration-mismatch
-
-  ...
-    <ScrollAndFocusHandler segmentPath={[...]}>
-      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
-        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
-          <LoadingBoundary name="predict/" loading={null}>
-            <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <InnerLayoutRouter url="/predict" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
-                    <SegmentViewNode type="page" pagePath="predict/pa...">
-                      <SegmentTrieNode>
-                      <ClientPageRoot Component={function PredictPage} serverProvidedParams={{...}}>
-                        <PredictPage params={Promise} searchParams={Promise}>
-                          <AuthGuard>
-                            <DashboardLayout>
-                              <div
-+                               className="min-h-screen bg-gray-50"
--                               className="min-h-screen flex items-center justify-center bg-gray-50"
-                              >
-+                               <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
--                               <div className="text-center">
-                                ...
-                    ...
-                  ...
-        ...
-
-[00:14:18.513] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:14:19.682] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-https://react.dev/link/hydration-mismatch
-
-  ...
-    <ScrollAndFocusHandler segmentPath={[...]}>
-      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
-        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
-          <LoadingBoundary name="predict/" loading={null}>
-            <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <InnerLayoutRouter url="/predict" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
-                    <SegmentViewNode type="page" pagePath="predict/pa...">
-                      <SegmentTrieNode>
-                      <ClientPageRoot Component={function PredictPage} serverProvidedParams={{...}}>
-                        <PredictPage params={Promise} searchParams={Promise}>
-                          <AuthGuard>
-                            <DashboardLayout>
-                              <div
-+                               className="min-h-screen bg-gray-50"
--                               className="min-h-screen flex items-center justify-center bg-gray-50"
-                              >
-+                               <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
--                               <div className="text-center">
-                                ...
-                    ...
-                  ...
-        ...
-
-[00:14:38.566] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
-[00:14:45.922] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
-[00:16:28.336] Server  LOG      ✓ Compiled in 86ms
-[00:16:29.777] Server  LOG      ✓ Compiled in 81ms
-[00:16:37.762] Server  LOG      ✓ Compiled in 75ms
-[00:16:39.090] Server  LOG      ✓ Compiled in 79ms
-[00:16:40.399] Server  LOG      ✓ Compiled in 61ms
-[00:16:42.120] Server  LOG      ✓ Compiled in 64ms
-[00:16:50.222] Server  LOG      ✓ Compiled in 81ms
-[00:16:58.409] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
-[00:16:58.589] Browser LOG     预测失败
-[00:17:22.515] Server  LOG      ✓ Compiled in 71ms
-[00:17:26.448] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
-[00:17:26.633] Browser LOG     {"error":"预测失败","success":false}
-[00:20:12.635] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:20:12.954] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-https://react.dev/link/hydration-mismatch
-
-  ...
-    <ScrollAndFocusHandler segmentPath={[...]}>
-      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
-        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
-          <LoadingBoundary name="predict/" loading={null}>
-            <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <InnerLayoutRouter url="/predict" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
-                    <SegmentViewNode type="page" pagePath="predict/pa...">
-                      <SegmentTrieNode>
-                      <ClientPageRoot Component={function PredictPage} serverProvidedParams={{...}}>
-                        <PredictPage params={Promise} searchParams={Promise}>
-                          <AuthGuard>
-                            <DashboardLayout>
-                              <div
-+                               className="min-h-screen bg-gray-50"
--                               className="min-h-screen flex items-center justify-center bg-gray-50"
-                              >
-+                               <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
--                               <div className="text-center">
-                                ...
-                    ...
-                  ...
-        ...
-
-[00:21:35.577] Server  ERROR   预测失败: ReferenceError: parsePace is not defined
-[00:21:35.796] Browser LOG     {"error":"预测失败","success":false}
+[00:27:38.813] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:33:48.060] Server  LOG      ✓ Compiled in 123ms
+[00:33:54.014] Server  LOG      ✓ Compiled in 98ms
+[00:34:12.779] Server  LOG      ✓ Compiled in 184ms
+[00:34:12.983] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:12.983] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:12.996] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:12.997] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:15.139] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:15.311] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:15.372] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:16.379] Server  LOG      ✓ Compiled in 108ms
+[00:34:16.394] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:16.517] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:16.675] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:16.732] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:18.141] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:18.141] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:18.187] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:21.830] Server  LOG      ✓ Compiled in 100ms
+[00:34:21.941] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:21.970] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:23.660] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:23.721] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:23.931] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:27.095] Server  LOG      ✓ Compiled in 107ms
+[00:34:27.207] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:27.225] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:28.895] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:28.895] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:28.991] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:50.289] Server  LOG      ✓ Compiled in 71ms
+[00:34:50.424] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:50.490] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:34:52.350] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:52.573] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:34:52.588] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:35:03.836] Server  LOG      ✓ Compiled in 101ms
+[00:35:03.861] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:35:03.873] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:35:03.988] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:35:03.989] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:35:05.676] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:35:05.676] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:35:05.688] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:35:32.952] Server  LOG      ✓ Compiled in 203ms
+[00:35:32.984] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:35:33.198] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:35:34.539] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:35:34.729] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:35:34.769] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:35:54.937] Server  LOG      ✓ Compiled in 75ms
+[00:35:56.314] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:35:56.314] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:35:58.997] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:35:59.024] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:35:59.245] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:36:55.144] Server  LOG      ✓ Compiled in 94ms
+[00:36:55.166] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:36:55.184] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:36:55.475] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:36:55.557] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:36:56.884] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:36:57.114] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:36:57.153] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:37:54.899] Server  LOG      ✓ Compiled in 76ms
+[00:37:56.124] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:37:56.351] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:37:58.018] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:37:58.155] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:37:58.273] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:38:17.108] Server  LOG      ✓ Compiled in 113ms
+[00:38:17.124] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:38:17.133] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:38:19.133] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:38:19.219] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:38:19.328] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:39:16.904] Server  LOG      ✓ Compiled in 95ms
+[00:39:16.935] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:39:16.953] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:39:17.220] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:39:18.872] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:39:19.043] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:39:19.110] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:39:33.638] Server  LOG      ✓ Compiled in 115ms
+[00:39:33.789] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:39:33.846] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:39:34.044] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:39:35.511] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:39:35.513] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:39:35.711] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:40:07.887] Server  LOG      ✓ Compiled in 120ms
+[00:40:08.205] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:40:08.784] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:40:10.113] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:40:10.124] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:40:10.314] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:40:20.899] Server  LOG      ✓ Compiled in 97ms
+[00:40:21.313] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:40:21.787] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:40:22.991] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:40:23.168] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:40:23.168] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:40:23.789] Server  LOG      ✓ Compiled in 79ms
+[00:40:24.186] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:40:24.434] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:40:25.775] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:40:26.049] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:40:26.050] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:40:33.820] Server  LOG      ✓ Compiled in 76ms
+[00:40:33.965] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:40:34.257] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:40:35.938] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:40:36.142] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider
+[00:40:36.209] Browser ERROR   uncaughtError: Error: useTheme must be used within a ThemeProvider

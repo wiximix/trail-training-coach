@@ -389,7 +389,7 @@ export default function PredictPage() {
       <AuthGuard>
         <DashboardLayout>
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600">加载中...</div>
+            <div className="text-gray-600 dark:text-gray-400">加载中...</div>
           </div>
         </DashboardLayout>
       </AuthGuard>
@@ -399,36 +399,36 @@ export default function PredictPage() {
   return (
     <AuthGuard>
       <DashboardLayout>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* 侧边栏 */}
       <aside
         className={`
-          fixed left-0 top-0 h-full bg-white shadow-lg transition-all duration-300 z-50 overflow-y-auto
+          fixed left-0 top-0 h-full bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 z-50 overflow-y-auto
           ${sidebarExpanded ? 'w-80' : 'w-0'}
         `}
       >
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">预测参数</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">预测参数</h2>
             <button
               onClick={() => setSidebarExpanded(false)}
-              className="p-2 hover:bg-gray-100 rounded-lg"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               title="收起侧边栏"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 选择成员 <span className="text-red-500">*</span>
               </label>
               <select
                 value={selectedMemberId}
                 onChange={(e) => handleMemberChange(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">请选择成员</option>
                 {members.map((member) => (
@@ -440,13 +440,13 @@ export default function PredictPage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 选择赛道 <span className="text-red-500">*</span>
               </label>
               <select
                 value={selectedTrailId}
                 onChange={(e) => setSelectedTrailId(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">请选择赛道</option>
                 {trails.map((trail) => {
@@ -466,13 +466,13 @@ export default function PredictPage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 比赛日预计出汗量
               </label>
               <select
                 value={expectedSweatRate}
                 onChange={(e) => setExpectedSweatRate(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">使用成员数据中的默认值</option>
                 <option value="有一点">有一点</option>
@@ -480,13 +480,13 @@ export default function PredictPage() {
                 <option value="非常多汗">非常多汗</option>
                 <option value="汗流浃背">汗流浃背</option>
               </select>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 如果不选择，将使用成员数据中的默认值
               </p>
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 计划配速
               </label>
               <input
@@ -496,20 +496,20 @@ export default function PredictPage() {
                   const value = e.target.value.replace(/\D/g, '') // 只允许数字
                   setPlannedPace(value)
                 }}
-                className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 placeholder="例如: 630 代表 6分30秒"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 输入目标配速，格式为MMSS（如630代表6分30秒每公里）。留空则使用预测配速
               </p>
             </div>
 
             <div>
-              <h3 className="mb-2 text-sm font-medium text-gray-700">补给含量（选填）</h3>
+              <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">补给含量（选填）</h3>
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-600">
+                    <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                       能量胶碳水含量 (Kcal)
                     </label>
                     <input
@@ -517,12 +517,12 @@ export default function PredictPage() {
                       min="0"
                       value={gelCarbs}
                       onChange={(e) => setGelCarbs(e.target.value)}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-900 dark:text-white text-sm bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                       placeholder="100"
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-600">
+                    <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                       盐丸电解质含量 (mg)
                     </label>
                     <input
@@ -530,12 +530,12 @@ export default function PredictPage() {
                       min="0"
                       value={saltElectrolytes}
                       onChange={(e) => setSaltElectrolytes(e.target.value)}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-900 dark:text-white text-sm bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                       placeholder="200"
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-600">
+                    <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                       电解质粉电解质含量 (mg)
                     </label>
                     <input
@@ -543,14 +543,14 @@ export default function PredictPage() {
                       min="0"
                       value={electrolytePowder}
                       onChange={(e) => setElectrolytePowder(e.target.value)}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-900 dark:text-white text-sm bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                       placeholder="300"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-600">
+                    <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                       电解质粉热量 (Kcal/份)
                     </label>
                     <input
@@ -558,12 +558,12 @@ export default function PredictPage() {
                       min="0"
                       value={electrolytePowderCalories}
                       onChange={(e) => setElectrolytePowderCalories(e.target.value)}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-900 dark:text-white text-sm bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                       placeholder="50"
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-600">
+                    <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                       电解质粉冲水量 (ml/份)
                     </label>
                     <input
@@ -571,7 +571,7 @@ export default function PredictPage() {
                       min="0"
                       value={electrolytePowderWater}
                       onChange={(e) => setElectrolytePowderWater(e.target.value)}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-900 dark:text-white text-sm bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                       placeholder="500"
                     />
                   </div>
@@ -606,7 +606,7 @@ export default function PredictPage() {
             <div className="flex items-center gap-4 mb-4">
               <button
                 onClick={() => setSidebarExpanded(!sidebarExpanded)}
-                className="p-2 hover:bg-gray-100 rounded-lg"
+                className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-200"
                 title={sidebarExpanded ? "收起侧边栏" : "展开侧边栏"}
               >
                 {sidebarExpanded ? (
@@ -619,81 +619,81 @@ export default function PredictPage() {
                   </svg>
                 )}
               </button>
-              <Link href="/" className="text-blue-600 hover:text-blue-700">
+              <Link href="/" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                 ← 返回首页
               </Link>
             </div>
-            <h1 className="mt-4 text-3xl font-bold text-gray-900">成绩预测</h1>
-            <p className="mt-2 text-gray-600">
+            <h1 className="mt-4 text-3xl font-bold text-gray-900 dark:text-white">成绩预测</h1>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">
               根据跑者的体能数据和赛道信息，智能预测比赛成绩和补给策略
             </p>
           </div>
 
           {error && (
-            <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-600">{error}</div>
+            <div className="mb-6 rounded-lg bg-red-50 dark:bg-red-900/20 p-4 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800">{error}</div>
           )}
 
           {result && (
             <div className="space-y-6">
-              <div className="rounded-lg bg-white p-6 shadow-md">
-                <h2 className="mb-6 text-xl font-semibold text-gray-900">预测结果</h2>
+              <div className="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-md">
+                <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">预测结果</h2>
 
                 <div className="mb-6">
-                  <h3 className="mb-4 font-semibold text-gray-900">预计完成时间</h3>
+                  <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">预计完成时间</h3>
                   <div className="grid gap-4 md:grid-cols-2">
-                    <div className="rounded-lg bg-blue-50 p-4">
-                      <h4 className="mb-2 font-medium text-gray-900">预计完赛时间</h4>
-                      <p className="text-3xl font-bold text-blue-600">{result.estimatedTime}</p>
+                    <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-4">
+                      <h4 className="mb-2 font-medium text-gray-900 dark:text-white">预计完赛时间</h4>
+                      <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{result.estimatedTime}</p>
                     </div>
-                    <div className="rounded-lg bg-green-50 p-4">
-                      <h4 className="mb-2 font-medium text-gray-900">预计平均配速</h4>
-                      <p className="text-3xl font-bold text-green-600">{result.estimatedPace}</p>
-                      <p className="text-xs text-gray-500 mt-1">分钟/KM</p>
+                    <div className="rounded-lg bg-green-50 dark:bg-green-900/20 p-4">
+                      <h4 className="mb-2 font-medium text-gray-900 dark:text-white">预计平均配速</h4>
+                      <p className="text-3xl font-bold text-green-600 dark:text-green-400">{result.estimatedPace}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">分钟/KM</p>
                     </div>
                   </div>
                 </div>
 
                 {result.totalEnergyNeeds && (
                   <div className="mb-6">
-                    <h3 className="mb-4 font-semibold text-gray-900">总能量需求</h3>
+                    <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">总能量需求</h3>
                     <div className="grid grid-cols-3 gap-4 mb-4">
-                      <div className="rounded-lg bg-orange-100 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">总热量</h4>
-                        <p className="text-2xl font-bold text-orange-700">{result.totalEnergyNeeds.carbs}</p>
-                        <p className="text-xs text-gray-500">Kcal</p>
+                      <div className="rounded-lg bg-orange-100 dark:bg-orange-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">总热量</h4>
+                        <p className="text-2xl font-bold text-orange-700 dark:text-orange-400">{result.totalEnergyNeeds.carbs}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Kcal</p>
                       </div>
-                      <div className="rounded-lg bg-blue-100 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">总水量</h4>
-                        <p className="text-2xl font-bold text-blue-700">{result.totalEnergyNeeds.water}</p>
-                        <p className="text-xs text-gray-500">ml</p>
+                      <div className="rounded-lg bg-blue-100 dark:bg-blue-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">总水量</h4>
+                        <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">{result.totalEnergyNeeds.water}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">ml</p>
                       </div>
-                      <div className="rounded-lg bg-green-100 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">总电解质</h4>
-                        <p className="text-2xl font-bold text-green-700">{result.totalEnergyNeeds.electrolytes}</p>
-                        <p className="text-xs text-gray-500">mg</p>
+                      <div className="rounded-lg bg-green-100 dark:bg-green-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">总电解质</h4>
+                        <p className="text-2xl font-bold text-green-700 dark:text-green-400">{result.totalEnergyNeeds.electrolytes}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">mg</p>
                       </div>
                     </div>
                     {result.totalSupplyDosages && (
                       <div className="grid grid-cols-4 gap-3">
-                        <div className="rounded-lg bg-purple-100 p-3">
-                          <h4 className="mb-1 text-xs font-medium text-gray-700">能量胶</h4>
-                          <p className="text-xl font-bold text-purple-700">{result.totalSupplyDosages.totalGels}</p>
-                          <p className="text-xs text-gray-500">支</p>
+                        <div className="rounded-lg bg-purple-100 dark:bg-purple-900/20 p-3">
+                          <h4 className="mb-1 text-xs font-medium text-gray-700 dark:text-gray-200">能量胶</h4>
+                          <p className="text-xl font-bold text-purple-700 dark:text-purple-400">{result.totalSupplyDosages.totalGels}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">支</p>
                         </div>
-                        <div className="rounded-lg bg-blue-100 p-3">
-                          <h4 className="mb-1 text-xs font-medium text-gray-700">水</h4>
-                          <p className="text-xl font-bold text-blue-700">{result.totalSupplyDosages.totalWater}</p>
-                          <p className="text-xs text-gray-500">ml</p>
+                        <div className="rounded-lg bg-blue-100 dark:bg-blue-900/20 p-3">
+                          <h4 className="mb-1 text-xs font-medium text-gray-700 dark:text-gray-200">水</h4>
+                          <p className="text-xl font-bold text-blue-700 dark:text-blue-400">{result.totalSupplyDosages.totalWater}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">ml</p>
                         </div>
-                        <div className="rounded-lg bg-teal-100 p-3">
-                          <h4 className="mb-1 text-xs font-medium text-gray-700">电解质水</h4>
-                          <p className="text-xl font-bold text-teal-700">{result.totalSupplyDosages.totalElectrolytePowder}</p>
-                          <p className="text-xs text-gray-500">份</p>
+                        <div className="rounded-lg bg-teal-100 dark:bg-teal-900/20 p-3">
+                          <h4 className="mb-1 text-xs font-medium text-gray-700 dark:text-gray-200">电解质水</h4>
+                          <p className="text-xl font-bold text-teal-700 dark:text-teal-400">{result.totalSupplyDosages.totalElectrolytePowder}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">份</p>
                         </div>
-                        <div className="rounded-lg bg-pink-100 p-3">
-                          <h4 className="mb-1 text-xs font-medium text-gray-700">盐丸</h4>
-                          <p className="text-xl font-bold text-pink-700">{result.totalSupplyDosages.totalSalts}</p>
-                          <p className="text-xs text-gray-500">粒</p>
+                        <div className="rounded-lg bg-pink-100 dark:bg-pink-900/20 p-3">
+                          <h4 className="mb-1 text-xs font-medium text-gray-700 dark:text-gray-200">盐丸</h4>
+                          <p className="text-xl font-bold text-pink-700 dark:text-pink-400">{result.totalSupplyDosages.totalSalts}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">粒</p>
                         </div>
                       </div>
                     )}
@@ -703,22 +703,22 @@ export default function PredictPage() {
                 {/* 显示动态计算的每小时能量需求 */}
                 {(dynamicHourlyEnergyNeeds || result.hourlyEnergyNeeds) && (
                   <div className="mb-6">
-                    <h3 className="mb-4 font-semibold text-gray-900">每小时能量需求</h3>
+                    <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">每小时能量需求</h3>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="rounded-lg bg-orange-50 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">热量</h4>
-                        <p className="text-2xl font-bold text-orange-600">{dynamicHourlyEnergyNeeds?.carbs || result.hourlyEnergyNeeds.carbs}</p>
-                        <p className="text-xs text-gray-500">Kcal/小时</p>
+                      <div className="rounded-lg bg-orange-50 dark:bg-orange-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">热量</h4>
+                        <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{dynamicHourlyEnergyNeeds?.carbs || result.hourlyEnergyNeeds.carbs}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Kcal/小时</p>
                       </div>
-                      <div className="rounded-lg bg-blue-50 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">水</h4>
-                        <p className="text-2xl font-bold text-blue-600">{dynamicHourlyEnergyNeeds?.water || result.hourlyEnergyNeeds.water}</p>
-                        <p className="text-xs text-gray-500">ml/小时</p>
+                      <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">水</h4>
+                        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{dynamicHourlyEnergyNeeds?.water || result.hourlyEnergyNeeds.water}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">ml/小时</p>
                       </div>
-                      <div className="rounded-lg bg-green-50 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">电解质</h4>
-                        <p className="text-2xl font-bold text-green-600">{dynamicHourlyEnergyNeeds?.electrolytes || result.hourlyEnergyNeeds.electrolytes}</p>
-                        <p className="text-xs text-gray-500">mg/小时</p>
+                      <div className="rounded-lg bg-green-50 dark:bg-green-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">电解质</h4>
+                        <p className="text-2xl font-bold text-green-600 dark:text-green-400">{dynamicHourlyEnergyNeeds?.electrolytes || result.hourlyEnergyNeeds.electrolytes}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">mg/小时</p>
                       </div>
                     </div>
                   </div>
@@ -727,113 +727,113 @@ export default function PredictPage() {
                 {/* 显示动态计算的每小时补给份数 */}
                 {(dynamicSupplyDosages || result.supplyDosages) && (
                   <div className="mb-6">
-                    <h3 className="mb-4 font-semibold text-gray-900">每小时补给份数</h3>
+                    <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">每小时补给份数</h3>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="rounded-lg bg-purple-50 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">能量胶</h4>
-                        <p className="text-2xl font-bold text-purple-600">{dynamicSupplyDosages?.gelsPerHour || result.supplyDosages.gelsPerHour}</p>
-                        <p className="text-xs text-gray-500">支/小时</p>
+                      <div className="rounded-lg bg-purple-50 dark:bg-purple-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">能量胶</h4>
+                        <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{dynamicSupplyDosages?.gelsPerHour || result.supplyDosages.gelsPerHour}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">支/小时</p>
                       </div>
-                      <div className="rounded-lg bg-pink-50 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">盐丸</h4>
-                        <p className="text-2xl font-bold text-pink-600">{dynamicSupplyDosages?.saltsPerHour || result.supplyDosages.saltsPerHour}</p>
-                        <p className="text-xs text-gray-500">粒/小时</p>
+                      <div className="rounded-lg bg-pink-50 dark:bg-pink-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">盐丸</h4>
+                        <p className="text-2xl font-bold text-pink-600 dark:text-pink-400">{dynamicSupplyDosages?.saltsPerHour || result.supplyDosages.saltsPerHour}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">粒/小时</p>
                       </div>
-                      <div className="rounded-lg bg-teal-50 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700">电解质粉</h4>
-                        <p className="text-2xl font-bold text-teal-600">{dynamicSupplyDosages?.electrolytePowderPerHour || result.supplyDosages.electrolytePowderPerHour}</p>
-                        <p className="text-xs text-gray-500">份/小时</p>
+                      <div className="rounded-lg bg-teal-50 dark:bg-teal-900/20 p-4">
+                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">电解质粉</h4>
+                        <p className="text-2xl font-bold text-teal-600 dark:text-teal-400">{dynamicSupplyDosages?.electrolytePowderPerHour || result.supplyDosages.electrolytePowderPerHour}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">份/小时</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 <div className="mb-6">
-                  <h3 className="mb-4 font-semibold text-gray-900">补给策略</h3>
+                  <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">补给策略</h3>
                   <ul className="space-y-2">
                     {result.overallSupplyStrategy.map((strategy, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-2 rounded-lg bg-yellow-50 p-3"
+                        className="flex items-start gap-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 p-3"
                       >
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-yellow-200 text-xs font-medium text-yellow-800">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-yellow-200 dark:bg-yellow-700 text-xs font-medium text-yellow-800 dark:text-yellow-100">
                           {index + 1}
                         </span>
-                        <span className="text-sm text-gray-700">{strategy}</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{strategy}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
                 <div className="mb-6">
-                  <h3 className="mb-4 font-semibold text-gray-900">CP点预计时间及补给</h3>
+                  <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">CP点预计时间及补给</h3>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                      <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             CP点
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             累计距离
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             本段距离
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             爬升
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             下坡
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             路段类型
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             路段系数
                           </th>
                           <th
-                            className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 cursor-help"
+                            className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300 cursor-help"
                             title="计算公式：分段用时(分钟) = (本段距离(km) + 爬升等效距离(km)) × 计划配速(分钟/km) × 路段系数&#10;爬升等效距离(km) = 爬升(m) × 10 ÷ 1000"
                           >
                             分段用时(分钟) ⚡
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             计划配速
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             预计时间
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             补给详情
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200 bg-white">
+                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
                         {result.checkpoints.map((cp) => (
                           <tr key={cp.id}>
-                            <td className="px-4 py-3 text-sm text-gray-900">
+                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">
                               {cp.supplyStrategy === "补给点" ? (
-                                <span className="rounded-full bg-blue-100 px-2 py-1 text-blue-800">
+                                <span className="rounded-full bg-blue-100 dark:bg-blue-900/30 px-2 py-1 text-blue-800 dark:text-blue-300">
                                   CP{cp.id}（补给）
                                 </span>
                               ) : (
-                                <span className="text-gray-600">CP{cp.id}</span>
+                                <span className="text-gray-600 dark:text-gray-400">CP{cp.id}</span>
                               )}
                             </td>
-                            <td className="px-4 py-3 text-sm text-gray-600">{cp.accumulatedDistance} km</td>
-                            <td className="px-4 py-3 text-sm text-gray-600">{cp.distance} km</td>
-                            <td className="px-4 py-3 text-sm text-gray-600">{cp.elevation} m</td>
-                            <td className="px-4 py-3 text-sm text-gray-600">{cp.downhillDistance || 0} m</td>
-                            <td className="px-4 py-3 text-sm text-gray-600">{cp.terrainType || "未知"}</td>
-                            <td className="px-4 py-3 text-sm text-gray-600">{cp.terrainPaceFactor?.toFixed(2) || "1.00"}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.accumulatedDistance} km</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.distance} km</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.elevation} m</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.downhillDistance || 0} m</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.terrainType || "未知"}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.terrainPaceFactor?.toFixed(2) || "1.00"}</td>
                             <td
-                              className="px-4 py-3 text-sm text-gray-600 cursor-help"
+                              className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 cursor-help"
                               title={`分段用时 = (${cp.distance}km + ${(cp.elevation * 10 / 1000).toFixed(3)}km) × ${getActualPaceForTooltip(cp)} × ${cp.terrainPaceFactor?.toFixed(2) || "1.00"}`}
                             >
                               {localCheckpointResults[cp.id - 1]?.sectionTime?.toFixed(1) || cp.sectionTime?.toFixed(1) || "0.0"}
                             </td>
-                            <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                            <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
                               <input
                                 type="text"
                                 value={checkpointPaces[cp.id] || ""}
@@ -847,36 +847,36 @@ export default function PredictPage() {
                                   const value = e.target.value.replace(/\D/g, '') // 只允许数字
                                   setCheckpointPaces({ ...checkpointPaces, [cp.id]: value })
                                 }}
-                                className="w-24 rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-24 rounded border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="如630"
                               />
                             </td>
-                            <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                            <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
                               {localCheckpointResults[cp.id - 1]?.estimatedTime || cp.estimatedTime}
                             </td>
-                            <td className="px-4 py-3 text-sm text-gray-600">
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                               {cp.sectionSupply ? (
                                 <div className="space-y-1">
                                   {cp.sectionSupply.gels > 0 && (
                                     <div className="text-xs">
                                       <span className="font-medium">{cp.sectionSupply.gels}份能量胶</span>
-                                      <span className="text-gray-500">（{cp.sectionSupply.gelCalories}Kcal）</span>
+                                      <span className="text-gray-500 dark:text-gray-400">（{cp.sectionSupply.gelCalories}Kcal）</span>
                                     </div>
                                   )}
                                   {cp.sectionSupply.electrolytePowder > 0 && (
                                     <div className="text-xs">
                                       <span className="font-medium">{cp.sectionSupply.electrolytePowder.toFixed(2)}份电解质</span>
-                                      <span className="text-gray-500">
+                                      <span className="text-gray-500 dark:text-gray-400">
                                         （{cp.sectionSupply.electrolytePowderCalories}Kcal， {cp.sectionSupply.electrolytePowderWater}ml， {cp.sectionSupply.electrolytePowderElectrolytes}mg）
                                       </span>
                                     </div>
                                   )}
                                   {!cp.sectionSupply.gels && !cp.sectionSupply.electrolytePowder && (
-                                    <span className="text-xs text-gray-400">暂无补给数据</span>
+                                    <span className="text-xs text-gray-400 dark:text-gray-500">暂无补给数据</span>
                                   )}
                                 </div>
                               ) : (
-                                <span className="text-xs text-gray-400">-</span>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">-</span>
                               )}
                             </td>
                           </tr>
@@ -900,7 +900,7 @@ export default function PredictPage() {
                       localStorage.setItem('pendingReview', JSON.stringify(reviewData))
                       router.push(`/reviews/new`)
                     }}
-                    className="w-full rounded-lg bg-purple-600 px-6 py-3 text-white font-medium hover:bg-purple-700"
+                    className="w-full rounded-lg bg-purple-600 dark:bg-purple-500 px-6 py-3 text-white font-medium hover:bg-purple-700 dark:hover:bg-purple-600"
                   >
                     开始复盘
                   </button>
@@ -910,13 +910,13 @@ export default function PredictPage() {
           )}
 
           {!result && (
-            <div className="rounded-lg bg-white p-12 shadow-md text-center">
-              <div className="text-gray-400 mb-4">
+            <div className="rounded-lg bg-white dark:bg-gray-800 p-12 shadow-md text-center">
+              <div className="text-gray-400 dark:text-gray-500 mb-4">
                 <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
-              <p className="text-lg text-gray-600">请在左侧选择预测参数并点击"开始预测"</p>
+              <p className="text-lg text-gray-600 dark:text-gray-400">请在左侧选择预测参数并点击"开始预测"</p>
             </div>
           )}
         </div>
