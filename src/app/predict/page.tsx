@@ -10,6 +10,7 @@ import {
   calculateSupplyDosages,
   type SupplyDosages,
   type HourlyEnergyNeeds,
+  calculateSegmentTime,
 } from "@/lib/trailAlgorithm"
 
 interface Member {
@@ -109,6 +110,15 @@ export default function PredictPage() {
   const [dynamicHourlyEnergyNeeds, setDynamicHourlyEnergyNeeds] = useState<HourlyEnergyNeeds | null>(null)
   const [dynamicSupplyDosages, setDynamicSupplyDosages] = useState<SupplyDosages | null>(null)
 
+  // 自定义平路基准配速P0（全局）
+  const [customFlatBaselinePace, setCustomFlatBaselinePace] = useState("")
+
+  // 每个CP点的自定义P0
+  const [checkpointP0s, setCheckpointP0s] = useState<Record<number, string>>({})
+
+  // 实时计算的预计时间
+  const [recalcTimes, setRecalcTimes] = useState<Record<number, string>>({})
+
   // 监听expectedSweatRate变化，动态更新每小时能量需求
   useEffect(() => {
     if (!selectedMemberId) return
@@ -136,6 +146,42 @@ export default function PredictPage() {
     )
     setDynamicSupplyDosages(supplyDosages)
   }, [dynamicHourlyEnergyNeeds, gelCarbs, saltElectrolytes, electrolytePowder])
+
+  // 监听CP点P0变化，重新计算预计时间
+  useEffect(() => {
+    if (!result) return
+
+    const newTimes: Record<number, string> = {}
+    let accumulatedMinutes = 0
+
+    result.checkpoints.forEach((cp, index) => {
+      const effectiveP0 = getEffectiveP0(cp.id, result)
+      const sectionTime = recalculateWithCustomP0(cp.id, result, effectiveP0)
+      accumulatedMinutes += sectionTime
+
+      // 将累计分钟转换为HH:MM:SS格式
+      const hours = Math.floor(accumulatedMinutes / 60)
+      const mins = Math.floor(accumulatedMinutes % 60)
+      const secs = Math.round((accumulatedMinutes % 1) * 60)
+      newTimes[cp.id] = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    })
+
+    setRecalcTimes(newTimes)
+  }, [checkpointP0s, customFlatBaselinePace, result])
+
+  // 预测完成后，初始化CP点P0输入框的值
+  useEffect(() => {
+    if (!result) return
+
+    const initialP0s: Record<number, string> = {}
+    const defaultP0 = parseMMSSPace(result.flatBaselinePace.replace(/[:/]/g, '')) || 6.0
+
+    result.checkpoints.forEach(cp => {
+      initialP0s[cp.id] = formatMinutesToMMSS(defaultP0)
+    })
+
+    setCheckpointP0s(initialP0s)
+  }, [result])
 
   useEffect(() => {
     fetchData()
@@ -174,6 +220,11 @@ export default function PredictPage() {
     setPredicting(true)
     setResult(null)
 
+    // 清空自定义P0值
+    setCustomFlatBaselinePace("")
+    setCheckpointP0s({})
+    setRecalcTimes({})
+
     try {
       const response = await fetch("/api/predict", {
         method: "POST",
@@ -210,6 +261,70 @@ export default function PredictPage() {
     if (member?.expectedSweatRate) {
       setExpectedSweatRate(member.expectedSweatRate)
     }
+  }
+
+  // 解析MMSS格式配速（如630 -> 6.5分钟/公里）
+  const parseMMSSPace = (mmss: string): number | null => {
+    if (!mmss || mmss.trim() === "") {
+      return null
+    }
+    const num = parseInt(mmss, 10)
+    if (isNaN(num)) {
+      return null
+    }
+    const minutes = Math.floor(num / 100)
+    const seconds = num % 100
+    return minutes + seconds / 60
+  }
+
+  // 格式化分钟为MMSS格式（如6.5 -> "630"）
+  const formatMinutesToMMSS = (minutes: number): string => {
+    const mins = Math.floor(minutes)
+    const secs = Math.round((minutes - mins) * 60)
+    return `${mins}${secs.toString().padStart(2, '0')}`
+  }
+
+  // 更新某个CP点的P0值
+  const handleCheckpointP0Change = (cpId: number, value: string) => {
+    setCheckpointP0s(prev => ({
+      ...prev,
+      [cpId]: value
+    }))
+  }
+
+  // 获取有效的P0值（优先级：CP点自定义 > 全局自定义 > 预测值）
+  const getEffectiveP0 = (cpId: number, result: PredictionResult): number => {
+    // 优先使用CP点自定义P0
+    const cpCustomP0 = parseMMSSPace(checkpointP0s[cpId])
+    if (cpCustomP0 !== null) {
+      return cpCustomP0
+    }
+
+    // 其次使用全局自定义P0
+    const globalCustomP0 = parseMMSSPace(customFlatBaselinePace)
+    if (globalCustomP0 !== null) {
+      return globalCustomP0
+    }
+
+    // 最后使用预测的P0值
+    return parseMMSSPace(result.flatBaselinePace.replace(/[:/]/g, '')) || 6.0
+  }
+
+  // 使用自定义P0重新计算分段用时
+  const recalculateWithCustomP0 = (cpId: number, result: PredictionResult, newP0: number): number => {
+    const checkpoint = result.checkpoints.find(cp => cp.id === cpId)
+    if (!checkpoint) return 0
+
+    const k = result.elevationLossCoefficient
+    const alpha = checkpoint.terrainPaceFactor || 1.0
+
+    return calculateSegmentTime(
+      checkpoint.distance,
+      newP0,
+      checkpoint.elevation,
+      k,
+      alpha
+    )
   }
 
   if (loading) {
@@ -292,6 +407,26 @@ export default function PredictPage() {
                   )
                 })}
               </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                平路基准配速 P0 (MMSS)
+              </label>
+              <input
+                type="text"
+                value={customFlatBaselinePace}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '') // 只允许数字
+                  setCustomFlatBaselinePace(value)
+                }}
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                placeholder="如 630 代表 6分30秒/公里"
+                maxLength={4}
+              />
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                留空则使用预测配速，格式如 630 代表 6:30/公里
+              </p>
             </div>
 
             <div>
@@ -616,6 +751,9 @@ export default function PredictPage() {
                           <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
                             地形复杂度系数 α
                           </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
+                            平路基准配速 P0
+                          </th>
                           <th
                             className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300 cursor-help"
                             title="计算公式：Ti = (Di × P0 + Ei × k) × α&#10;Ti: 分段用时（分钟）&#10;Di: 分段距离（km）&#10;P0: 平路基准配速（分钟/km）&#10;Ei: 分段爬升（m）&#10;k: 爬升损耗系数（秒/米）&#10;α: 地形复杂度系数"
@@ -648,14 +786,24 @@ export default function PredictPage() {
                             <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.downhillDistance || 0} m</td>
                             <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.terrainType || "未知"}</td>
                             <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.terrainPaceFactor?.toFixed(2) || "1.00"}</td>
+                            <td className="px-4 py-3">
+                              <input
+                                type="text"
+                                value={checkpointP0s[cp.id] || formatMinutesToMMSS(parseMMSSPace(result.flatBaselinePace.replace(/[:/]/g, '')) || 6.0)}
+                                onChange={(e) => handleCheckpointP0Change(cp.id, e.target.value.replace(/\D/g, ''))}
+                                className="w-20 rounded border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                placeholder="MMSS"
+                                maxLength={4}
+                              />
+                            </td>
                             <td
                               className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 cursor-help"
-                              title={`分段用时 = (${cp.distance}km × ${result.flatBaselinePace} + ${cp.elevation}m × ${result.elevationLossCoefficient}s/m ÷ 60s) × ${cp.terrainPaceFactor?.toFixed(2) || "1.00"}`}
+                              title={`分段用时 = (${cp.distance}km × ${getEffectiveP0(cp.id, result).toFixed(2)} + ${cp.elevation}m × ${result.elevationLossCoefficient}s/m ÷ 60s) × ${cp.terrainPaceFactor?.toFixed(2) || "1.00"}`}
                             >
-                              {cp.sectionTime?.toFixed(1) || "0.0"}
+                              {recalculateWithCustomP0(cp.id, result, getEffectiveP0(cp.id, result)).toFixed(1)}
                             </td>
                             <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
-                              {cp.estimatedTime}
+                              {recalcTimes[cp.id] || cp.estimatedTime}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                               {cp.sectionSupply ? (

@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-12 | `98ba59deaaa62882d96e0bd63cdc76d5c188c200` | main | feat: 更新成绩预测算法，采用新公式 Ti = (Di × P0 + Ei × k) × α | 无 | src/app/members/[id]/edit/page.tsx,src/app/members/new/page.tsx,src/app/predict/page.tsx,src/app/trails/[id]/edit/page.tsx,src/app/trails/new/page.tsx,src/lib/trailAlgorithm.ts,src/storage/database/shared/schema.ts,tsconfig.tsbuildinfo |
 | 2026-01-12 | `4cfd11b1a3f623c4c0286a3ed40838a83e36c0cb` | main | fix: 修复路书识别功能的bug，增强AI识别能力并完善数据完整性 | 无 | tsconfig.tsbuildinfo |
 | 2026-01-12 | `96ece12f517da0888494abeecd9ee767fad8006a` | main | fix: 修复路书图片上传和数据库迁移问题 | 无 | drizzle/meta/0000_snapshot.json,drizzle/meta/_journal.json,src/app/api/upload/route.ts,tsconfig.tsbuildinfo |
 | 2026-01-12 | `951dddf3eb306fe893ffb90f207942e5e1d8f2fe` | main | feat: 添加路书图片上传和自动识别功能 | 无 |  |
