@@ -63,6 +63,8 @@ export const trails = pgTable(
     name: varchar("name", { length: 200 }).notNull(),
     cpCount: integer("cp_count").notNull(), // CP点数量
     checkpoints: jsonb("checkpoints").notNull(), // 每节点长度和爬升量（JSON数组）
+    routeMapKey: text("route_map_key"), // 路书图片的对象存储Key
+    routeMapUrl: text("route_map_url"), // 路书图片的访问URL（用于临时展示）
     // 时间戳
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()

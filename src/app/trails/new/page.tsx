@@ -18,7 +18,11 @@ interface Checkpoint {
 export default function NewTrailPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [recognizing, setRecognizing] = useState(false)
   const [error, setError] = useState("")
+  const [routeMapKey, setRouteMapKey] = useState("")
+  const [routeMapUrl, setRouteMapUrl] = useState("")
+  const [uploading, setUploading] = useState(false)
 
   // 计算爬升影响值
   const calculateElevationFactor = (per100mElevation: number): number => {
@@ -60,6 +64,71 @@ export default function NewTrailPage() {
     cpCount: 0,
     checkpoints: [] as Checkpoint[],
   })
+
+  // 上传路书图片
+  const handleUploadRouteMap = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    setError("")
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        setRouteMapKey(data.data.fileKey)
+        setRouteMapUrl(data.data.signedUrl)
+      } else {
+        setError(data.error || "上传失败")
+      }
+    } catch (err) {
+      setError("网络错误，请稍后重试")
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  // 识别路书
+  const handleRecognizeRoute = async () => {
+    if (!routeMapUrl) {
+      setError("请先上传路书图片")
+      return
+    }
+
+    setRecognizing(true)
+    setError("")
+
+    try {
+      const response = await fetch("/api/recognize-route", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: routeMapUrl }),
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        setFormData({
+          name: data.data.name || "",
+          cpCount: data.data.cpCount || data.data.checkpoints.length,
+          checkpoints: data.data.checkpoints,
+        })
+      } else {
+        setError(data.error || "识别失败，请手动输入")
+      }
+    } catch (err) {
+      setError("网络错误，请稍后重试")
+    } finally {
+      setRecognizing(false)
+    }
+  }
 
   const handleCpCountChange = (count: number) => {
     const newCheckpoints: Checkpoint[] = []
@@ -145,6 +214,8 @@ export default function NewTrailPage() {
       const payload = {
         ...formData,
         cpCount: Number(formData.cpCount),
+        routeMapKey,
+        routeMapUrl,
         checkpoints: formData.checkpoints.map((cp) => ({
           ...cp,
           distance: Number(cp.distance),
@@ -175,7 +246,7 @@ export default function NewTrailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <div className="mb-8">
           <Link href="/trails" className="text-blue-600 hover:text-blue-700">
             ← 返回赛道列表
@@ -188,6 +259,61 @@ export default function NewTrailPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6 rounded-lg bg-white p-6 shadow-md">
+          {/* 路书图片上传区域 */}
+          <div className="rounded-lg border-2 border-dashed border-gray-300 p-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">路书图片识别（可选）</h3>
+            <p className="mb-4 text-sm text-gray-500">
+              上传路书图片，AI将自动识别赛道信息并填入表单
+            </p>
+
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    选择图片文件
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                    onChange={handleUploadRouteMap}
+                    disabled={uploading}
+                    className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={handleRecognizeRoute}
+                    disabled={!routeMapUrl || recognizing}
+                    className="rounded-lg bg-purple-600 px-6 py-2.5 text-white font-medium hover:bg-purple-700 disabled:bg-gray-400"
+                  >
+                    {recognizing ? "识别中..." : "识别路书"}
+                  </button>
+                </div>
+              </div>
+
+              {routeMapUrl && (
+                <div className="flex items-start gap-4">
+                  <img
+                    src={routeMapUrl}
+                    alt="路书预览"
+                    className="h-40 w-auto rounded-lg border border-gray-200 object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRouteMapKey("")
+                      setRouteMapUrl("")
+                    }}
+                    className="text-sm text-red-600 hover:text-red-700"
+                  >
+                    删除图片
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">
               赛道名称 <span className="text-red-500">*</span>
