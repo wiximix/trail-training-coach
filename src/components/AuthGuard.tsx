@@ -16,8 +16,17 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
     const token = getToken()
     const user = getStoredUser()
 
+    console.log("[AuthGuard] 认证检查:", {
+      hasToken: !!token,
+      hasUser: !!user,
+      userId: user?.id,
+    })
+
     if (!token || !user) {
+      console.warn("[AuthGuard] 未认证，重定向到登录页")
       router.push("/auth/login")
+    } else {
+      console.log("[AuthGuard] 认证通过")
     }
   }, [router])
 

@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginUserSchema } from "@/storage/database/shared/schema"
 import type { LoginUser } from "@/storage/database/shared/schema"
 import { Mail, Lock, AlertCircle } from "lucide-react"
+import { setAuth } from "@/lib/auth"
 
 function LoginFormContent() {
   const router = useRouter()
@@ -41,18 +42,24 @@ function LoginFormContent() {
       const result = await response.json()
 
       if (result.success) {
-        // 保存 token 和用户信息到 localStorage
-        localStorage.setItem("token", result.data.token)
-        localStorage.setItem("user", JSON.stringify(result.data.user))
+        // 保存 token 和用户信息到 localStorage 和 cookie
+        setAuth(result.data.token, result.data.user)
+
+        console.log("[Login] 登录成功，准备跳转")
 
         // 检查是否有重定向参数
         const redirect = searchParams.get("redirect")
-        router.push(redirect || "/")
+        const targetPath = redirect || "/"
+
+        console.log(`[Login] 跳转到: ${targetPath}`)
+        router.push(targetPath)
         router.refresh()
       } else {
+        console.error("[Login] 登录失败:", result.message)
         setError(result.message || "登录失败")
       }
     } catch (err) {
+      console.error("[Login] 登录请求异常:", err)
       setError("网络错误，请稍后重试")
     } finally {
       setLoading(false)

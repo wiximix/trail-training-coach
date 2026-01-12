@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 // 定义需要登录的路径
-const protectedPaths = ["/profile", "/members", "/trails", "/predict", "/reviews"]
+const protectedPaths = ["/profile", "/members", "/trails", "/predict", "/reviews", "/teams"]
 
 // 定义认证相关路径（已登录用户不应访问）
 const authPaths = ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password"]
@@ -10,19 +10,32 @@ const authPaths = ["/auth/login", "/auth/register", "/auth/forgot-password", "/a
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  console.log(`[Middleware] 请求路径: ${pathname}`)
+
   // 检查是否是需要登录的路径
   const isProtectedPath = protectedPaths.some((path) => pathname.startsWith(path))
 
   // 检查是否是认证相关路径
   const isAuthPath = authPaths.some((path) => pathname.startsWith(path))
 
-  // 获取 token
-  const token = request.cookies.get("token")?.value || request.headers.get("authorization")?.replace("Bearer ", "")
+  // 获取 token（从 cookie 或 authorization header）
+  const cookieToken = request.cookies.get("token")?.value
+  const headerToken = request.headers.get("authorization")?.replace("Bearer ", "")
+  const token = cookieToken || headerToken
+
+  console.log(`[Middleware] Token 检查:`, {
+    hasCookieToken: !!cookieToken,
+    hasHeaderToken: !!headerToken,
+    isProtectedPath,
+    isAuthPath,
+  })
 
   // 如果访问需要登录的路径但没有 token，重定向到登录页
   if (isProtectedPath && !token) {
+    console.warn(`[Middleware] 访问受保护路径但未认证: ${pathname}`)
     const loginUrl = new URL("/auth/login", request.url)
     loginUrl.searchParams.set("redirect", pathname)
+    console.log(`[Middleware] 重定向到登录页: ${loginUrl.href}`)
     return NextResponse.redirect(loginUrl)
   }
 
@@ -30,9 +43,11 @@ export function middleware(request: NextRequest) {
   if (isAuthPath && token) {
     const redirectParam = request.nextUrl.searchParams.get("redirect")
     const redirectUrl = redirectParam ? new URL(redirectParam, request.url) : new URL("/", request.url)
+    console.log(`[Middleware] 已登录用户访问认证路径，重定向到: ${redirectUrl.pathname}`)
     return NextResponse.redirect(redirectUrl)
   }
 
+  console.log(`[Middleware] 允许访问: ${pathname}`)
   return NextResponse.next()
 }
 
