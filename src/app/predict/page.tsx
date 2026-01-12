@@ -114,7 +114,7 @@ export default function PredictPage() {
   const [customFlatBaselinePace, setCustomFlatBaselinePace] = useState("")
 
   // 自定义爬升损耗系数k（全局）
-  const [customElevationLossCoefficient, setCustomElevationLossCoefficient] = useState("1")
+  const [customElevationLossCoefficient, setCustomElevationLossCoefficient] = useState("1.2")
 
   // 每个CP点的自定义P0
   const [checkpointP0s, setCheckpointP0s] = useState<Record<number, string>>({})
@@ -192,10 +192,6 @@ export default function PredictPage() {
 
     setCheckpointP0s(initialP0s)
     setCheckpointKs(initialKs)
-
-    // 清空侧边栏自定义值
-    setCustomFlatBaselinePace("")
-    setCustomElevationLossCoefficient("")
   }, [result])
 
   useEffect(() => {
@@ -234,11 +230,6 @@ export default function PredictPage() {
     setError("")
     setPredicting(true)
     setResult(null)
-
-    // 清空自定义P0值
-    setCustomFlatBaselinePace("")
-    setCheckpointP0s({})
-    setRecalcTimes({})
 
     try {
       const response = await fetch("/api/predict", {
