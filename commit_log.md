@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-12 | `dd6bc3c9680fda85e8c81f22edb6283f227bde60` | main | feat: 添加路书图片上传和自动识别功能 | 无 | src/app/api/recognize-route/route.ts,src/app/api/upload/route.ts,src/app/trails/[id]/edit/page.tsx,src/app/trails/new/page.tsx,src/storage/database/shared/schema.ts,tsconfig.tsbuildinfo,workspace/git history.md |
 | 2026-01-12 | `5c72877838c6d27f939e89953993a0f30afa5990` | main | auto saved your changes before deploy | 无 |  |
 | 2026-01-12 | `3b389efd6fac817144f20c9690773bf55b36d48d` | main | fix: 修复登录后跳转问题，添加详细的调试日志 | 无 | src/app/auth/login/LoginClient.tsx,src/components/AuthGuard.tsx,src/lib/auth.ts,tsconfig.tsbuildinfo |
 | 2026-01-12 | `3fd719e728546823b50ecaf71ffe251fd750f47d` | main | auto saved your changes before deploy | 无 |  |

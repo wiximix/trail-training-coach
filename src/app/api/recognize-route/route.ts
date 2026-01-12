@@ -1,9 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { LLMClient, Config } from "coze-coding-dev-sdk"
-
-// 初始化LLM客户端
-const config = new Config()
-const client = new LLMClient(config)
 
 interface RecognizedCheckpoint {
   distance: number
@@ -14,6 +9,13 @@ interface RecognizedCheckpoint {
 // POST /api/recognize-route - 识别路书图片
 export async function POST(request: NextRequest) {
   try {
+    // 动态导入LLMClient，避免客户端打包问题
+    const { LLMClient, Config } = await import("coze-coding-dev-sdk")
+
+    // 初始化LLM客户端
+    const config = new Config()
+    const client = new LLMClient(config)
+
     const body = await request.json()
     const { imageUrl } = body
 
