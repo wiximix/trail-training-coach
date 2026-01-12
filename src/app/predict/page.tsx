@@ -182,8 +182,14 @@ export default function PredictPage() {
 
     const initialP0s: Record<number, string> = {}
     const initialKs: Record<number, string> = {}
-    const defaultP0 = parseMMSSPace(result.flatBaselinePace.replace(/[:/]/g, '')) || 6.0
-    const defaultK = result.elevationLossCoefficient
+
+    // 优先使用侧边栏的自定义值，否则使用预测值
+    const defaultP0 = customFlatBaselinePace
+      ? parseMMSSPace(customFlatBaselinePace) || 6.0
+      : parseMMSSPace(result.flatBaselinePace.replace(/[:/]/g, '')) || 6.0
+    const defaultK = customElevationLossCoefficient
+      ? parseFloat(customElevationLossCoefficient)
+      : result.elevationLossCoefficient
 
     result.checkpoints.forEach(cp => {
       initialP0s[cp.id] = formatMinutesToMMSS(defaultP0)
@@ -192,7 +198,7 @@ export default function PredictPage() {
 
     setCheckpointP0s(initialP0s)
     setCheckpointKs(initialKs)
-  }, [result])
+  }, [result, customFlatBaselinePace, customElevationLossCoefficient])
 
   useEffect(() => {
     fetchData()
@@ -239,6 +245,8 @@ export default function PredictPage() {
           memberId: selectedMemberId,
           trailId: selectedTrailId,
           expectedSweatRate: expectedSweatRate || undefined,
+          customFlatBaselinePace: customFlatBaselinePace || undefined,
+          customElevationLossCoefficient: customElevationLossCoefficient ? parseFloat(customElevationLossCoefficient) : undefined,
           gelCarbs: gelCarbs ? Number(gelCarbs) : undefined,
           saltElectrolytes: saltElectrolytes ? Number(saltElectrolytes) : undefined,
           electrolytePowder: electrolytePowder ? Number(electrolytePowder) : undefined,
@@ -250,6 +258,8 @@ export default function PredictPage() {
       const data = await response.json()
       if (data.success) {
         setResult(data.data)
+        // 预测成功后，应用侧边栏的参数到CP点列表
+        applySidebarParams()
       } else {
         console.log(data)
         setError(data.error || "预测失败")

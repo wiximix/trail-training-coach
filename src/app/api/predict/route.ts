@@ -47,6 +47,8 @@ interface PredictionRequest {
   expectedSweatRate?: string
   plannedPace?: string // 计划配速
   checkpointPaces?: Record<number, string> // 每个CP的独立计划配速
+  customFlatBaselinePace?: string // 自定义平路基准配速P0（侧边栏）
+  customElevationLossCoefficient?: number // 自定义爬升损耗系数k（侧边栏）
   gelCarbs?: number // 能量胶碳水含量
   saltElectrolytes?: number // 盐丸电解质含量
   electrolytePowder?: number // 电解质粉含量
@@ -113,6 +115,8 @@ export async function POST(request: NextRequest) {
       expectedSweatRate,
       plannedPace,
       checkpointPaces,
+      customFlatBaselinePace,
+      customElevationLossCoefficient,
       gelCarbs,
       saltElectrolytes,
       electrolytePowder,
@@ -141,8 +145,10 @@ export async function POST(request: NextRequest) {
     // 获取全局地形类型系数
     const globalTerrainPaceFactors = await getGlobalTerrainPaceFactors()
 
-    // 获取平路基准配速P0（优先使用flatBaselinePace，否则使用marathonPace）
-    const flatBaselinePace = parsePace(member.flatBaselinePace || member.marathonPace || "6:00/km")
+    // 获取平路基准配速P0（优先使用自定义值，否则使用成员的flatBaselinePace，最后使用marathonPace）
+    const flatBaselinePace = customFlatBaselinePace
+      ? parsePace(customFlatBaselinePace)
+      : parsePace(member.flatBaselinePace || member.marathonPace || "6:00/km")
     const vo2Max = member.vo2Max
     const checkpoints = trail.checkpoints as any[]
 
@@ -172,8 +178,10 @@ export async function POST(request: NextRequest) {
       electrolytePowder
     )
 
-    // 计算爬升损耗系数k（基于VO2Max）
-    const elevationLossCoefficient = calculateElevationLossCoefficient(vo2Max)
+    // 计算爬升损耗系数k（优先使用自定义值，否则基于VO2Max计算）
+    const elevationLossCoefficient = customElevationLossCoefficient !== undefined
+      ? customElevationLossCoefficient
+      : calculateElevationLossCoefficient(vo2Max)
 
     // 解析计划配速（如果提供）- 用于备用方案
     const plannedPaceMinutes = plannedPace ? parsePace(plannedPace) : null
