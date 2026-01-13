@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 interface RecognizedCheckpoint {
   distance: number
   elevation: number
+  downhillDistance: number
   terrainType: "沙地" | "机耕道" | "山路" | "石铺路" | "台阶"
 }
 
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest) {
 识别要求：
 1. 赛道名称：从图片中识别赛道名称（如果没有明确标注，请根据上下文推断一个合理的名称）
 2. CP点数量：统计图片中显示的CP点数量（包括起点、终点和所有中间CP点）
-3. CP点信息：每个CP点的距离（公里）和爬升量（米），以及路面类型
+3. CP点信息：每个CP点的距离（公里）、爬升量（米）、下坡距离（米）以及路面类型
 4. 路面类型：从以下选项中选择 - 沙地、机耕道、山路、石铺路、台阶（如果无法识别，默认选择"山路"）
 
 JSON格式要求：
@@ -54,15 +55,18 @@ JSON格式要求：
       "id": CP点编号（从1开始）,
       "distance": 距离（公里，数字类型，保留1位小数，如5.5）,
       "elevation": 爬升量（米，数字类型，整数，如100）,
+      "downhillDistance": 下坡距离（米，数字类型，整数，如50）,
       "terrainType": "路面类型"
     }
   ]
 }
 
 重要提示：
-- 距离和爬升量必须是纯数字，不能包含单位（如"km"、"米"等）
+- 距离、爬升量和下坡距离必须是纯数字，不能包含单位（如"km"、"米"等）
 - 如果图片显示的是累计距离，请转换为每段的增量距离
 - 如果图片显示的是累计爬升，请转换为每段的增量爬升
+- 下坡距离是指该路段中纯下坡的距离（如果有显示）
+- 如果无法识别下坡距离，请设置为0
 - 如果无法识别距离或爬升量，请合理推断或设置为0
 - checkpoints数组中的id字段必须连续，从1开始
 - cpCount必须等于checkpoints数组的长度
@@ -74,8 +78,9 @@ JSON格式要求：
 识别要点：
 1. 找出所有CP点（包括起点、终点和中间检查点）
 2. 识别每个CP点的距离（公里）和累计爬升量（米）
-3. 如果是累计值，请计算每段的增量值
-4. 识别各路段的路面类型（沙地、机耕道、山路、石铺路、台阶）
+3. 识别每个CP点的下坡距离（米），如果路书中有标注下降或下坡信息
+4. 如果是累计值，请计算每段的增量值
+5. 识别各路段的路面类型（沙地、机耕道、山路、石铺路、台阶）
 
 请严格按照JSON格式返回识别结果。`
 
@@ -189,6 +194,7 @@ JSON格式要求：
     const checkpoints = recognizedData.checkpoints.map((cp: RecognizedCheckpoint, index: number) => {
       const distance = Number(cp.distance) || 0
       const elevation = Number(cp.elevation) || 0
+      const downhillDistance = Number(cp.downhillDistance) || 0
 
       // 计算坡度相关字段
       let per100mElevation = 0
@@ -205,7 +211,7 @@ JSON格式要求：
         id: index + 1,
         distance,
         elevation,
-        downhillDistance: 0,
+        downhillDistance,
         terrainType: ["沙地", "机耕道", "山路", "石铺路", "台阶"].includes(cp.terrainType)
           ? (cp.terrainType as RecognizedCheckpoint["terrainType"])
           : "山路",

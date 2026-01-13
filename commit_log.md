@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-12 | `b29016d60d6b146480ae651c5ad61ead22df5bce` | main | auto saved your changes before deploy | 无 |  |
 | 2026-01-12 | `944fe0074519b196f95cbc87fc328f8c86e8c53a` | main | deploy: 部署最新版本修复预测参数问题 | 无 |  |
 | 2026-01-12 | `de0994ecd25c173f6f691103e2858514a83e9a2c` | main | fix: 修复预测参数传递和更新问题 | 无 | src/app/predict/page.tsx,tsconfig.tsbuildinfo |
 | 2026-01-12 | `9518da9ebb95cb45aecf7274c279df5803215dc2` | main | feat: 将地形复杂系数改为全局设置，新增系统设置页面 | 无 | src/app/api/predict/route.ts,src/app/api/terrain-types/[id]/route.ts,src/app/api/terrain-types/route.ts,src/app/members/[id]/edit/page.tsx,src/app/members/new/page.tsx,src/app/settings/page.tsx,src/components/DashboardLayout.tsx,src/lib/trailAlgorithm.ts,src/storage/database/index.ts,src/storage/database/shared/schema.ts,tsconfig.tsbuildinfo |

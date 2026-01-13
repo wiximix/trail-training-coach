@@ -39,6 +39,7 @@ export default function EditTrailPage({ params }: { params: Promise<{ id: string
   const [routeMapKey, setRouteMapKey] = useState("")
   const [routeMapUrl, setRouteMapUrl] = useState("")
   const [uploading, setUploading] = useState(false)
+  const [showImageModal, setShowImageModal] = useState(false)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -346,7 +347,9 @@ export default function EditTrailPage({ params }: { params: Promise<{ id: string
                   <img
                     src={routeMapUrl}
                     alt="路书预览"
-                    className="h-40 w-auto rounded-lg border border-gray-200 object-cover"
+                    onClick={() => setShowImageModal(true)}
+                    className="h-40 w-auto cursor-pointer rounded-lg border border-gray-200 object-cover hover:opacity-90 transition-opacity"
+                    title="点击查看大图"
                   />
                   <button
                     type="button"
@@ -539,6 +542,32 @@ export default function EditTrailPage({ params }: { params: Promise<{ id: string
             </button>
           </div>
         </form>
+
+        {/* 图片查看弹窗 */}
+        {showImageModal && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ backgroundColor: "rgba(0,0,0,0.9)" }}
+            onClick={() => setShowImageModal(false)}
+          >
+            <div className="relative max-w-5xl max-h-screen p-4">
+              <button
+                onClick={() => setShowImageModal(false)}
+                className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <img
+                src={routeMapUrl}
+                alt="路书大图"
+                className="max-w-full max-h-[calc(100vh-2rem)] object-contain"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
