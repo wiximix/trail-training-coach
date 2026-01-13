@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-14 | `353e85ef04c503cef37cb7f8262d15437beb62f6` | main | fix: 修复编辑赛道后保存失败导致赛道消失的问题 | 无 | src/app/api/trails/route.ts,src/app/trails/[id]/edit/page.tsx,src/app/trails/new/page.tsx,tsconfig.tsbuildinfo |
 | 2026-01-13 | `e874507344273a18fd394690636bab04262e3cde` | main | fix: 修复路书识别下坡数据问题并增加缩略图查看功能 | 无 |  |
 | 2026-01-13 | `0d67c1e66828d7b978da4b374f41ceaf08e7cf2a` | main | fix: 修复路书识别下坡数据问题并增加缩略图查看功能 | 无 | src/app/api/recognize-route/route.ts,src/app/trails/[id]/edit/page.tsx,src/app/trails/new/page.tsx,tsconfig.tsbuildinfo |
 | 2026-01-12 | `b29016d60d6b146480ae651c5ad61ead22df5bce` | main | auto saved your changes before deploy | 无 |  |
