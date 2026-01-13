@@ -25,12 +25,15 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    console.log("创建赛道，接收数据:", JSON.stringify(body, null, 2))
     const trail = await trailManager.createTrail(body)
     return NextResponse.json({ success: true, data: trail }, { status: 201 })
   } catch (error) {
     console.error("创建赛道失败:", error)
+    // 提取更详细的错误信息
+    const errorMessage = error instanceof Error ? error.message : "创建赛道失败"
     return NextResponse.json(
-      { success: false, error: "创建赛道失败" },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

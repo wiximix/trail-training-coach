@@ -35,6 +35,7 @@ export async function PUT(
   try {
     const { id } = await params
     const body = await request.json()
+    console.log("更新赛道，ID:", id, "数据:", JSON.stringify(body, null, 2))
     const trail = await trailManager.updateTrail(id, body)
     if (!trail) {
       return NextResponse.json(
@@ -45,8 +46,10 @@ export async function PUT(
     return NextResponse.json({ success: true, data: trail })
   } catch (error) {
     console.error("更新赛道失败:", error)
+    // 提取更详细的错误信息
+    const errorMessage = error instanceof Error ? error.message : "更新赛道失败"
     return NextResponse.json(
-      { success: false, error: "更新赛道失败" },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

@@ -246,17 +246,22 @@ export default function EditTrailPage({ params }: { params: Promise<{ id: string
     setSaving(true)
 
     try {
+      // 只提交数据库需要的字段，避免额外的字段导致验证失败
       const payload = {
-        ...formData,
+        name: formData.name,
         cpCount: Number(formData.cpCount),
         routeMapKey,
         routeMapUrl,
         checkpoints: formData.checkpoints.map((cp) => ({
-          ...cp,
+          id: cp.id,
           distance: Number(cp.distance),
           elevation: Number(cp.elevation),
+          downhillDistance: Number(cp.downhillDistance || 0),
+          terrainType: cp.terrainType,
         })),
       }
+
+      console.log("提交数据:", JSON.stringify(payload, null, 2))
 
       const response = await fetch(`/api/trails/${trailId}`, {
         method: "PUT",
@@ -265,14 +270,18 @@ export default function EditTrailPage({ params }: { params: Promise<{ id: string
       })
 
       const data = await response.json()
+      console.log("API响应:", data)
+
       if (data.success) {
         // 刷新路由缓存，确保列表页面显示最新数据
         router.refresh()
         router.push("/trails")
       } else {
+        console.error("保存失败:", data.error)
         setError(data.error || "更新赛道失败")
       }
     } catch (err) {
+      console.error("保存出错:", err)
       setError("网络错误，请稍后重试")
     } finally {
       setSaving(false)
