@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
-import AuthGuard from "@/components/AuthGuard"
-import DashboardLayout from "@/components/DashboardLayout"
+import AuthGuard from "@/components/features/auth/AuthGuard"
+import DashboardLayout from "@/components/features/layout/DashboardLayout"
 import { ArrowLeft, Clock, TrendingUp, Calendar, Activity, Droplets, Flame } from "lucide-react"
 
 interface ReviewDetail {
