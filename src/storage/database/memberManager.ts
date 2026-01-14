@@ -3,7 +3,18 @@ import { getDb } from "./db"
 import { members, insertMemberSchema, updateMemberSchema } from "./shared/schema"
 import type { Member, InsertMember, UpdateMember } from "./shared/schema"
 
-export class MemberManager {
+class MemberManager {
+  private static instance: MemberManager
+
+  private constructor() {}
+
+  static getInstance(): MemberManager {
+    if (!MemberManager.instance) {
+      MemberManager.instance = new MemberManager()
+    }
+    return MemberManager.instance
+  }
+
   async createMember(data: InsertMember): Promise<Member> {
     const db = await getDb()
     const validated = insertMemberSchema.parse(data)
@@ -40,3 +51,6 @@ export class MemberManager {
     return (result.rowCount ?? 0) > 0
   }
 }
+
+// 导出单例实例
+export const memberManager = MemberManager.getInstance()

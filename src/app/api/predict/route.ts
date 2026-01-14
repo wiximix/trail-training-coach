@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { MemberManager, TrailManager, getDb } from "@/storage/database"
+import { memberManager, trailManager, getDb } from "@/storage/database"
 import {
   parsePace,
   generateSupplyStrategy,
@@ -13,9 +13,6 @@ import {
 } from "@/lib/trailAlgorithm"
 import { terrainTypes } from "@/storage/database/shared/schema"
 import { eq } from "drizzle-orm"
-
-const memberManager = new MemberManager()
-const trailManager = new TrailManager()
 
 /**
  * 从数据库获取启用的地形类型系数

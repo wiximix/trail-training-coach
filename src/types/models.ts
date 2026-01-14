@@ -136,6 +136,16 @@ export interface HeartRateZone {
 }
 
 /**
+ * 心率区间类型
+ */
+export interface HeartRateZone {
+  name: string
+  min: number
+  max: number
+  color: string
+}
+
+/**
  * 补给策略参数
  */
 export interface SupplyStrategyParams {

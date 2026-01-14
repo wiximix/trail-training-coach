@@ -3,7 +3,18 @@ import { getDb } from "./db"
 import { trails, insertTrailSchema, updateTrailSchema } from "./shared/schema"
 import type { Trail, InsertTrail, UpdateTrail } from "./shared/schema"
 
-export class TrailManager {
+class TrailManager {
+  private static instance: TrailManager
+
+  private constructor() {}
+
+  static getInstance(): TrailManager {
+    if (!TrailManager.instance) {
+      TrailManager.instance = new TrailManager()
+    }
+    return TrailManager.instance
+  }
+
   async createTrail(data: InsertTrail): Promise<Trail> {
     const db = await getDb()
     const validated = insertTrailSchema.parse(data)
@@ -40,3 +51,6 @@ export class TrailManager {
     return (result.rowCount ?? 0) > 0
   }
 }
+
+// 导出单例实例
+export const trailManager = TrailManager.getInstance()

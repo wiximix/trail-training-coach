@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { TeamManager } from "@/storage/database"
-
-const teamManager = new TeamManager()
+import { teamManager } from "@/storage/database"
 
 // DELETE /api/teams/[id]/members/[userId] - 移除成员
 export async function DELETE(

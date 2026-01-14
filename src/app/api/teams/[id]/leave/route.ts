@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { TeamManager } from "@/storage/database"
-
-const teamManager = new TeamManager()
+import { teamManager } from "@/storage/database"
 
 // POST /api/teams/[id]/leave - 退出跑团
 export async function POST(

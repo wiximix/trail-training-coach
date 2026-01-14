@@ -17,7 +17,18 @@ import type {
   UpdateTeamMember,
 } from "./shared/schema"
 
-export class TeamManager {
+class TeamManager {
+  private static instance: TeamManager
+
+  private constructor() {}
+
+  static getInstance(): TeamManager {
+    if (!TeamManager.instance) {
+      TeamManager.instance = new TeamManager()
+    }
+    return TeamManager.instance
+  }
+
   // 创建跑团
   async createTeam(data: InsertTeam & { ownerId: string }): Promise<Team> {
     const db = await getDb()
@@ -322,3 +333,6 @@ export class TeamManager {
     return member !== null && member.status === "approved"
   }
 }
+
+// 导出单例实例
+export const teamManager = TeamManager.getInstance()

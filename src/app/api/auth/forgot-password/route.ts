@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { UserManager } from "@/storage/database/userManager"
+import { userManager } from "@/storage/database"
 import { SignJWT } from "jose"
-
-const userManager = new UserManager()
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "your-secret-key-change-this-in-production"

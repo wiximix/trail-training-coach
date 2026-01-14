@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { ReviewManager } from "@/storage/database"
-
-const reviewManager = new ReviewManager()
+import { reviewManager } from "@/storage/database"
 
 // GET /api/reviews/[id] - 获取单个复盘记录
 export async function GET(

@@ -3,7 +3,18 @@ import { getDb } from "./db"
 import { reviews, insertReviewSchema, updateReviewSchema } from "./shared/schema"
 import type { Review, InsertReview, UpdateReview } from "./shared/schema"
 
-export class ReviewManager {
+class ReviewManager {
+  private static instance: ReviewManager
+
+  private constructor() {}
+
+  static getInstance(): ReviewManager {
+    if (!ReviewManager.instance) {
+      ReviewManager.instance = new ReviewManager()
+    }
+    return ReviewManager.instance
+  }
+
   async createReview(data: InsertReview): Promise<Review> {
     const db = await getDb()
     const validated = insertReviewSchema.parse(data)
@@ -50,3 +61,6 @@ export class ReviewManager {
     return (result.rowCount ?? 0) > 0
   }
 }
+
+// 导出单例实例
+export const reviewManager = ReviewManager.getInstance()
