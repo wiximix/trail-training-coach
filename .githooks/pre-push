@@ -30,16 +30,10 @@ ARCHIVE_SCRIPT="${PROJECT_ROOT}/scripts/archive-commit-log.sh"
 # commit_log.md 文件路径
 COMMIT_LOG_FILE="${PROJECT_ROOT}/commit_log.md"
 
-# 检查是否有待提交的更改
-STAGED_CHANGES=$(git diff --cached --name-only | grep -E "^commit_log\.md$" || true)
-
-# 检查 commit_log.md 是否有更改
+# 检查 commit_log.md 是否有未暂存的更改
 LOG_HAS_CHANGES=false
-if [ -n "${STAGED_CHANGES}" ]; then
-    log_info "检测到 commit_log.md 有待提交的更改"
-    LOG_HAS_CHANGES=true
-elif [ -f "${COMMIT_LOG_FILE}" ] && [ -s "${COMMIT_LOG_FILE}" ]; then
-    # 检查是否有未暂存的更改
+if [ -f "${COMMIT_LOG_FILE}" ] && [ -s "${COMMIT_LOG_FILE}" ]; then
+    # 只检查未暂存的更改（已暂存的更改会在本次 commit 中提交）
     UNSTAGED_CHANGES=$(git diff --name-only | grep -E "^commit_log\.md$" || true)
     if [ -n "${UNSTAGED_CHANGES}" ]; then
         log_warn "commit_log.md 有未暂存的更改"
