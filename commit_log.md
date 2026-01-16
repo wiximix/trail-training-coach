@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-17 | `c4fc1a310d36174bfbaa6b4ecc4eb6670dee1065` | main | refactor: 整理文档和脚本目录结构，添加 commit log 自动归档功能 | 无 |  |
 | 2026-01-17 | `0c8a6d2fd6b33615ba58949076ed2400ba49d572` | main | docs: 更新项目目录结构说明文档 | 无 |  |
 | 2026-01-17 | `fc10d6eb02d9a69ad416431504855aa0889fdebb` | main | docs: 更新 commit log | 无 |  |
 | 2026-01-17 | `52c71bcc0bd5966c1d04f115e49b7474033e6e13` | main | refactor: 优化 pre-push hook，忽略 commit_log.md 的自动更新 | 无 |  |
