@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import AuthGuard from "@/components/AuthGuard"
-import DashboardLayout from "@/components/DashboardLayout"
+import AuthGuard from "@/components/features/auth/AuthGuard"
+import DashboardLayout from "@/components/features/layout/DashboardLayout"
 import { ArrowRight, Calendar, Clock, TrendingUp, Plus, Search } from "lucide-react"
 
 interface Review {

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { isAuthenticated, getStoredUser, logout } from "@/lib/auth"
 import { User, LogOut, Menu, X } from "lucide-react"
 import { useState } from "react"
-import ThemeToggle from "@/components/ThemeToggle"
+import ThemeToggle from "@/components/features/theme/ThemeToggle"
 
 interface DashboardLayoutProps {
   children: React.ReactNode

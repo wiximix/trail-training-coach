@@ -8,7 +8,17 @@ import { SignJWT, jwtVerify } from "jose"
 // JWT 密钥（在生产环境中应该从环境变量读取）
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "your-secret-key-change-this-in-production")
 
-export class UserManager {
+class UserManager {
+  private static instance: UserManager
+
+  private constructor() {}
+
+  static getInstance(): UserManager {
+    if (!UserManager.instance) {
+      UserManager.instance = new UserManager()
+    }
+    return UserManager.instance
+  }
   // 注册用户
   async register(data: RegisterUser): Promise<{ user: Omit<User, "passwordHash">; token: string }> {
     const db = await getDb()
@@ -133,3 +143,6 @@ export class UserManager {
     })
   }
 }
+
+// 导出单例实例
+export const userManager = UserManager.getInstance()

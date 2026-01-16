@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { TeamManager } from "@/storage/database"
-
-const teamManager = new TeamManager()
+import { teamManager } from "@/storage/database"
 
 // GET /api/teams/[id]/members - 获取跑团成员列表
 export async function GET(

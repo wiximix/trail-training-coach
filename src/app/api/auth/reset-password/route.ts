@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
-import { UserManager } from "@/storage/database/userManager"
+import { userManager } from "@/storage/database"
 import { jwtVerify } from "jose"
 import { eq } from "drizzle-orm"
 import { getDb } from "@/storage/database/db"
 import { users } from "@/storage/database/shared/schema"
-
-const userManager = new UserManager()
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "your-secret-key-change-this-in-production"

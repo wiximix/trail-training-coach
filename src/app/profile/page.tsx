@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import AuthGuard from "@/components/AuthGuard"
+import AuthGuard from "@/components/features/auth/AuthGuard"
 import { getStoredUser, logout, clearAuth } from "@/lib/auth"
 import type { AuthUser } from "@/lib/auth"
 import { User, Mail, Calendar, LogOut, Lock, ArrowRight, Shield } from "lucide-react"
