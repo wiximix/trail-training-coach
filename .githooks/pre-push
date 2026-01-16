@@ -67,13 +67,13 @@ else
     log_info "commit_log.md 无更新，跳过归档"
 fi
 
-# 检查是否有未提交的更改
-UNCOMMITTED_CHANGES=$(git status --porcelain | wc -l)
+# 检查是否有未提交的更改（排除 commit_log.md 的自动更新）
+UNCOMMITTED_CHANGES=$(git status --porcelain | grep -v "^M  commit_log\.md$" | wc -l)
 if [ "${UNCOMMITTED_CHANGES}" -gt 0 ]; then
     echo
     log_warn "警告: 检测到 ${UNCOMMITTED_CHANGES} 个未提交的更改"
     echo
-    git status --short
+    git status --porcelain | grep -v "^M  commit_log\.md$"
     echo
     read -p "是否继续 push？(y/N): " -n 1 -r
     echo
@@ -81,6 +81,15 @@ if [ "${UNCOMMITTED_CHANGES}" -gt 0 ]; then
         log_info "取消 push 操作"
         exit 1
     fi
+    echo
+elif git status --porcelain | grep -q "^M  commit_log\.md$"; then
+    # 只有 commit_log.md 有未暂存的更改，自动暂存并提交
+    echo
+    log_warn "检测到 commit_log.md 有未暂存的更改"
+    log_info "自动暂存并提交..."
+    git add commit_log.md
+    git commit -m "docs: 自动更新 commit log"
+    log_info "已提交 commit_log.md 的更改"
     echo
 fi
 

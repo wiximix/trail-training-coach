@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-17 | `b53b80d07c246f97ea80df5adbddeeed6e7ac7b3` | main | refactor: 优化 pre-push hook 逻辑，只检测未暂存的 commit_log 更改 | 无 |  |
 | 2026-01-17 | `19cab2d8c33e7d350813d074bd33a9f693ef379e` | main | docs: 更新 commit log - 添加归档记录 | 无 |  |
 | 2026-01-17 | `6864bb6b8348784d5afe2cdc1a0e7c454852dd88` | main | docs: 归档 commit log - 2026-01-17_003201 | 无 |  |
 | 2026-01-17 | `769632b787191d75f66e2653c00423ae0a786fac` | main | refactor: 整理文档和脚本目录结构，添加 commit log 自动归档功能 | 无 | docs/API_ROUTES.md,docs/CODE_OPTIMIZATION_SUMMARY.md,docs/COMMIT_LOG_GUIDE.md,docs/DEPLOYMENT.md,docs/README.md,docs/REFACTORING_GUIDE.md,docs/REFACTORING_SUMMARY.md,docs/refine.md,scripts/README.md,scripts/archive-commit-log.sh,scripts/git-commit-wrapper.sh,scripts/git-commit.sh,scripts/install-hooks.sh,scripts/restore_history.sh,scripts/test_commit.sh,scripts/upload_to_github.sh |
