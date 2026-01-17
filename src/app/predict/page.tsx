@@ -5,6 +5,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import AuthGuard from "@/components/features/auth/AuthGuard"
 import DashboardLayout from "@/components/features/layout/DashboardLayout"
+import CheckpointTable from "@/components/features/checkpoint"
+import SupplyCalculator from "@/components/features/supply"
 import {
   calculateHourlyEnergyNeeds,
   calculateSupplyDosages,
@@ -752,52 +754,14 @@ export default function PredictPage() {
                 )}
 
                 {/* 显示动态计算的每小时能量需求 */}
-                {(dynamicHourlyEnergyNeeds || result.hourlyEnergyNeeds) && (
-                  <div className="mb-6">
-                    <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">每小时能量需求</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="rounded-lg bg-orange-50 dark:bg-orange-900/20 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">热量</h4>
-                        <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{dynamicHourlyEnergyNeeds?.carbs || result.hourlyEnergyNeeds.carbs}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Kcal/小时</p>
-                      </div>
-                      <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">水</h4>
-                        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{dynamicHourlyEnergyNeeds?.water || result.hourlyEnergyNeeds.water}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">ml/小时</p>
-                      </div>
-                      <div className="rounded-lg bg-green-50 dark:bg-green-900/20 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">电解质</h4>
-                        <p className="text-2xl font-bold text-green-600 dark:text-green-400">{dynamicHourlyEnergyNeeds?.electrolytes || result.hourlyEnergyNeeds.electrolytes}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">mg/小时</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 显示动态计算的每小时补给份数 */}
-                {(dynamicSupplyDosages || result.supplyDosages) && (
-                  <div className="mb-6">
-                    <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">每小时补给份数</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="rounded-lg bg-purple-50 dark:bg-purple-900/20 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">能量胶</h4>
-                        <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{dynamicSupplyDosages?.gelsPerHour || result.supplyDosages.gelsPerHour}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">支/小时</p>
-                      </div>
-                      <div className="rounded-lg bg-pink-50 dark:bg-pink-900/20 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">盐丸</h4>
-                        <p className="text-2xl font-bold text-pink-600 dark:text-pink-400">{dynamicSupplyDosages?.saltsPerHour || result.supplyDosages.saltsPerHour}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">粒/小时</p>
-                      </div>
-                      <div className="rounded-lg bg-teal-50 dark:bg-teal-900/20 p-4">
-                        <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">电解质粉</h4>
-                        <p className="text-2xl font-bold text-teal-600 dark:text-teal-400">{dynamicSupplyDosages?.electrolytePowderPerHour || result.supplyDosages.electrolytePowderPerHour}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">份/小时</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <SupplyCalculator
+                  hourlyEnergyNeeds={result.hourlyEnergyNeeds}
+                  dynamicHourlyEnergyNeeds={dynamicHourlyEnergyNeeds}
+                  supplyDosages={result.supplyDosages}
+                  dynamicSupplyDosages={dynamicSupplyDosages}
+                  totalEnergyNeeds={result.totalEnergyNeeds}
+                  totalSupplyDosages={result.totalSupplyDosages}
+                />
 
                 <div className="mb-6">
                   <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">补给策略</h3>
@@ -818,129 +782,23 @@ export default function PredictPage() {
 
                 <div className="mb-6">
                   <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">CP点预计时间及补给</h3>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                      <thead className="bg-gray-50 dark:bg-gray-700">
-                        <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            CP点
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            累计距离
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            分段距离 Di (km)
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            分段爬升 Ei (m)
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            下坡
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            地形类型
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            地形复杂度系数 α
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            平路基准配速 P0
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            爬升损耗系数 k
-                          </th>
-                          <th
-                            className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300 cursor-help"
-                            title="计算公式：Ti = (Di × P0 + Ei × k) × α&#10;Ti: 分段用时（分钟）&#10;Di: 分段距离（km）&#10;P0: 平路基准配速（分钟/km）&#10;Ei: 分段爬升（m）&#10;k: 爬升损耗系数（秒/米）&#10;α: 地形复杂度系数"
-                          >
-                            分段用时(分钟) ⚡
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            预计时间
-                          </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500 dark:text-gray-300">
-                            补给详情
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                        {result.checkpoints.map((cp) => (
-                          <tr key={cp.id}>
-                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                              {cp.supplyStrategy === "补给点" ? (
-                                <span className="rounded-full bg-blue-100 dark:bg-blue-900/30 px-2 py-1 text-blue-800 dark:text-blue-300">
-                                  CP{cp.id}（补给）
-                                </span>
-                              ) : (
-                                <span className="text-gray-600 dark:text-gray-400">CP{cp.id}</span>
-                              )}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.accumulatedDistance} km</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.distance} km</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.elevation} m</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.downhillDistance || 0} m</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.terrainType || "未知"}</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{cp.terrainPaceFactor?.toFixed(2) || "1.00"}</td>
-                            <td className="px-4 py-3">
-                              <input
-                                type="text"
-                                value={checkpointP0s[cp.id] || formatMinutesToMMSS(parseMMSSPace(result.flatBaselinePace.replace(/[:/]/g, '')) || 6.0)}
-                                onChange={(e) => handleCheckpointP0Change(cp.id, e.target.value.replace(/\D/g, ''))}
-                                className="w-20 rounded border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                placeholder="MMSS"
-                                maxLength={4}
-                              />
-                            </td>
-                            <td className="px-4 py-3">
-                              <input
-                                type="number"
-                                step="0.1"
-                                min="0"
-                                value={checkpointKs[cp.id] || result.elevationLossCoefficient}
-                                onChange={(e) => handleCheckpointKChange(cp.id, e.target.value)}
-                                className="w-16 rounded border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                placeholder="秒/米"
-                              />
-                            </td>
-                            <td
-                              className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 cursor-help"
-                              title={`分段用时 = (${cp.distance}km × ${getEffectiveP0(cp.id, result).toFixed(2)} + ${cp.elevation}m × ${getEffectiveK(cp.id, result)}s/m ÷ 60s) × ${cp.terrainPaceFactor?.toFixed(2) || "1.00"}`}
-                            >
-                              {recalculateWithCustomParams(cp.id, result, getEffectiveP0(cp.id, result), getEffectiveK(cp.id, result)).toFixed(1)}
-                            </td>
-                            <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
-                              {recalcTimes[cp.id] || cp.estimatedTime}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                              {cp.sectionSupply ? (
-                                <div className="space-y-1">
-                                  {cp.sectionSupply.gels > 0 && (
-                                    <div className="text-xs">
-                                      <span className="font-medium">{cp.sectionSupply.gels}份能量胶</span>
-                                      <span className="text-gray-500 dark:text-gray-400">（{cp.sectionSupply.gelCalories}Kcal）</span>
-                                    </div>
-                                  )}
-                                  {cp.sectionSupply.electrolytePowder > 0 && (
-                                    <div className="text-xs">
-                                      <span className="font-medium">{cp.sectionSupply.electrolytePowder.toFixed(2)}份电解质</span>
-                                      <span className="text-gray-500 dark:text-gray-400">
-                                        （{cp.sectionSupply.electrolytePowderCalories}Kcal， {cp.sectionSupply.electrolytePowderWater}ml， {cp.sectionSupply.electrolytePowderElectrolytes}mg）
-                                      </span>
-                                    </div>
-                                  )}
-                                  {!cp.sectionSupply.gels && !cp.sectionSupply.electrolytePowder && (
-                                    <span className="text-xs text-gray-400 dark:text-gray-500">暂无补给数据</span>
-                                  )}
-                                </div>
-                              ) : (
-                                <span className="text-xs text-gray-400 dark:text-gray-500">-</span>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                  <CheckpointTable
+                    checkpoints={result.checkpoints}
+                    editable={false}
+                    showPrediction={true}
+                    showCustomP0={true}
+                    showCustomK={true}
+                    checkpointP0s={checkpointP0s}
+                    checkpointKs={checkpointKs}
+                    onCheckpointP0Change={handleCheckpointP0Change}
+                    onCheckpointKChange={handleCheckpointKChange}
+                    recalcTimes={recalcTimes}
+                    recalculateWithCustomParams={recalculateWithCustomParams}
+                    getEffectiveP0={getEffectiveP0}
+                    getEffectiveK={getEffectiveK}
+                    predictionResult={result}
+                    customFlatBaselinePace={customFlatBaselinePace}
+                  />
                 </div>
 
                 <div className="mt-6">

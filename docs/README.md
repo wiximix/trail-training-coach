@@ -6,16 +6,18 @@
 
 ```
 docs/
-├── README.md                    # 本文档
-├── API_ROUTES.md                # API 路由文档
-├── DEPLOYMENT.md                # 部署指南
-├── CODE_OPTIMIZATION_SUMMARY.md # 代码优化总结
-├── COMMIT_LOG_GUIDE.md          # Commit Log 使用指南
-├── REFACTORING_GUIDE.md         # 重构指南
-├── REFACTORING_SUMMARY.md       # 重构总结
-├── refine.md                    # 项目优化建议
-└── archives/                    # 归档目录
-    └── commit_log_YYYY-MM-DD.md # 归档的 commit log
+├── README.md                         # 本文档
+├── API_ROUTES.md                     # API 路由文档
+├── DEPLOYMENT.md                     # 部署指南
+├── CODE_OPTIMIZATION_SUMMARY.md      # 代码优化总结
+├── COMMIT_LOG_GUIDE.md               # Commit Log 使用指南
+├── REFACTORING_GUIDE.md              # 重构指南
+├── REFACTORING_SUMMARY.md            # 重构总结
+├── refine.md                         # 项目优化建议
+├── refine_status.md                  # 项目优化状态评估
+├── component-refactor-completed.md   # 组件复用增强完成记录
+└── archives/                         # 归档目录
+    └── commit_log_YYYY-MM-DD.md      # 归档的 commit log
 ```
 
 ## 文档说明
@@ -32,6 +34,8 @@ docs/
 - **REFACTORING_GUIDE.md**: 重构指南，包含重构的最佳实践
 - **REFACTORING_SUMMARY.md**: 项目重构的总结报告
 - **refine.md**: 项目优化建议和待办事项
+- **refine_status.md**: 项目优化状态评估，记录各项优化的完成情况
+- **component-refactor-completed.md**: 组件复用增强与表单抽离完成记录
 
 ### Commit 相关
 
