@@ -1,5 +1,9 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import { memberManager, trailManager, getDb } from "@/storage/database"
+import { logger } from "@/lib/logger"
+import { errorResponse, loggedAsyncHandler, NotFoundError } from "@/lib/errorHandler"
+import { validateBody } from "@/lib/validation"
+import { predictionParamsSchema } from "@/lib/validation"
 import {
   parsePace,
   generateSupplyStrategy,
@@ -104,8 +108,12 @@ interface PredictionResult {
 
 // POST /api/predict - 预测成绩和补给策略
 export async function POST(request: NextRequest) {
-  try {
-    const body: PredictionRequest = await request.json()
+  return loggedAsyncHandler("POST", "/api/predict", async () => {
+    const body = await request.json()
+
+    // 验证输入数据
+    const validatedData = validateBody(predictionParamsSchema, body)
+
     const {
       memberId,
       trailId,
@@ -119,24 +127,22 @@ export async function POST(request: NextRequest) {
       electrolytePowder,
       electrolytePowderCalories,
       electrolytePowderWater,
-    } = body
+    } = validatedData
+
+    logger.dbOperation("SELECT", "members", { memberId })
 
     // 获取成员数据
     const member = await memberManager.getMemberById(memberId)
     if (!member) {
-      return NextResponse.json(
-        { success: false, error: "成员不存在" },
-        { status: 404 }
-      )
+      throw new NotFoundError("成员")
     }
+
+    logger.dbOperation("SELECT", "trails", { trailId })
 
     // 获取赛道数据
     const trail = await trailManager.getTrailById(trailId)
     if (!trail) {
-      return NextResponse.json(
-        { success: false, error: "赛道不存在" },
-        { status: 404 }
-      )
+      throw new NotFoundError("赛道")
     }
 
     // 获取全局地形类型系数
@@ -310,12 +316,12 @@ export async function POST(request: NextRequest) {
       totalSupplyDosages,
     }
 
-    return NextResponse.json({ success: true, data: result })
-  } catch (error) {
-    console.error("预测失败:", error)
-    return NextResponse.json(
-      { success: false, error: "预测失败" },
-      { status: 500 }
-    )
-  }
+    logger.info("Prediction completed", {
+      memberId,
+      trailId,
+      estimatedTime: result.estimatedTime,
+    })
+
+    return result
+  }).catch((error) => errorResponse(error))
 }

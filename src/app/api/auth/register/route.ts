@@ -1,47 +1,31 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import { userManager } from "@/storage/database"
-import type { RegisterUser } from "@/storage/database/shared/schema"
+import { logger } from "@/lib/logger"
+import { errorResponse, loggedAsyncHandler } from "@/lib/errorHandler"
+import { validateBody } from "@/lib/validation"
+import { registerUserSchema } from "@/storage/database/shared/schema"
 
 export async function POST(request: NextRequest) {
-  try {
-    const body: RegisterUser = await request.json()
+  return loggedAsyncHandler("POST", "/api/auth/register", async () => {
+    const body = await request.json()
 
     // 验证输入数据
-    const result = await userManager.register(body)
+    const validatedData = validateBody(registerUserSchema, body)
+
+    logger.auth("register_attempt", undefined, {
+      username: validatedData.username,
+      email: validatedData.email,
+    })
+
+    // 验证输入数据并注册
+    const result = await userManager.register(validatedData)
+
+    logger.auth("register_success", result.user.id)
 
     // 返回用户信息和 token
-    return NextResponse.json(
-      {
-        success: true,
-        message: "注册成功",
-        data: {
-          user: result.user,
-          token: result.token,
-        },
-      },
-      { status: 201 }
-    )
-  } catch (error) {
-    console.error("注册错误:", error)
-
-    if (error instanceof Error) {
-      // 业务逻辑错误（如邮箱已存在）
-      return NextResponse.json(
-        {
-          success: false,
-          message: error.message,
-        },
-        { status: 400 }
-      )
+    return {
+      user: result.user,
+      token: result.token,
     }
-
-    // 未知错误
-    return NextResponse.json(
-      {
-        success: false,
-        message: "注册失败，请稍后重试",
-      },
-      { status: 500 }
-    )
-  }
+  }).catch((error) => errorResponse(error))
 }

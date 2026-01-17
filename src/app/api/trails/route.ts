@@ -1,38 +1,36 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import { trailManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
+import { errorResponse, loggedAsyncHandler } from "@/lib/errorHandler"
+import { parsePaginationParams, validateBody } from "@/lib/validation"
+import { insertTrailSchema } from "@/storage/database/shared/schema"
 
 // GET /api/trails - 获取赛道列表
 export async function GET(request: NextRequest) {
-  try {
-    const searchParams = request.nextUrl.searchParams
-    const skip = Number(searchParams.get("skip")) || 0
-    const limit = Number(searchParams.get("limit")) || 100
+  return loggedAsyncHandler("GET", "/api/trails", async () => {
+    const pagination = parsePaginationParams(request.nextUrl.searchParams)
 
-    const trails = await trailManager.getTrails({ skip, limit })
-    return NextResponse.json({ success: true, data: trails })
-  } catch (error) {
-    console.error("获取赛道列表失败:", error)
-    return NextResponse.json(
-      { success: false, error: "获取赛道列表失败" },
-      { status: 500 }
-    )
-  }
+    logger.dbOperation("SELECT", "trails", { pagination })
+
+    const trails = await trailManager.getTrails(pagination)
+    return trails
+  }).catch((error) => errorResponse(error))
 }
 
 // POST /api/trails - 创建赛道
 export async function POST(request: NextRequest) {
-  try {
+  return loggedAsyncHandler("POST", "/api/trails", async () => {
     const body = await request.json()
-    console.log("创建赛道，接收数据:", JSON.stringify(body, null, 2))
-    const trail = await trailManager.createTrail(body)
-    return NextResponse.json({ success: true, data: trail }, { status: 201 })
-  } catch (error) {
-    console.error("创建赛道失败:", error)
-    // 提取更详细的错误信息
-    const errorMessage = error instanceof Error ? error.message : "创建赛道失败"
-    return NextResponse.json(
-      { success: false, error: errorMessage },
-      { status: 500 }
-    )
-  }
+
+    // 验证输入数据
+    const validatedData = validateBody(insertTrailSchema, body)
+
+    logger.dbOperation("INSERT", "trails", {
+      name: validatedData.name,
+      cpCount: validatedData.cpCount,
+    })
+
+    const trail = await trailManager.createTrail(validatedData)
+    return trail
+  }).catch((error) => errorResponse(error))
 }

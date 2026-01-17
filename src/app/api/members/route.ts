@@ -1,35 +1,35 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import { memberManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
+import { errorResponse, loggedAsyncHandler, successResponse } from "@/lib/errorHandler"
+import { parsePaginationParams, validateBody } from "@/lib/validation"
+import { insertMemberSchema } from "@/storage/database/shared/schema"
 
 // GET /api/members - 获取成员列表
 export async function GET(request: NextRequest) {
-  try {
-    const searchParams = request.nextUrl.searchParams
-    const skip = Number(searchParams.get("skip")) || 0
-    const limit = Number(searchParams.get("limit")) || 100
+  return loggedAsyncHandler("GET", "/api/members", async () => {
+    const pagination = parsePaginationParams(request.nextUrl.searchParams)
 
-    const members = await memberManager.getMembers({ skip, limit })
-    return NextResponse.json({ success: true, data: members })
-  } catch (error) {
-    console.error("获取成员列表失败:", error)
-    return NextResponse.json(
-      { success: false, error: "获取成员列表失败" },
-      { status: 500 }
-    )
-  }
+    logger.dbOperation("SELECT", "members", { pagination })
+
+    const members = await memberManager.getMembers(pagination)
+    return members
+  }).catch((error) => errorResponse(error))
 }
 
 // POST /api/members - 创建成员
 export async function POST(request: NextRequest) {
-  try {
+  return loggedAsyncHandler("POST", "/api/members", async () => {
     const body = await request.json()
-    const member = await memberManager.createMember(body)
-    return NextResponse.json({ success: true, data: member }, { status: 201 })
-  } catch (error) {
-    console.error("创建成员失败:", error)
-    return NextResponse.json(
-      { success: false, error: "创建成员失败" },
-      { status: 500 }
-    )
-  }
+
+    // 验证输入数据
+    const validatedData = validateBody(insertMemberSchema, body)
+
+    logger.dbOperation("INSERT", "members", {
+      name: validatedData.name,
+    })
+
+    const member = await memberManager.createMember(validatedData)
+    return member
+  }).catch((error) => errorResponse(error))
 }

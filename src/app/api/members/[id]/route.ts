@@ -1,28 +1,27 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import { memberManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
+import { errorResponse, loggedAsyncHandler, NotFoundError } from "@/lib/errorHandler"
+import { parseIdParam, validateBody } from "@/lib/validation"
+import { updateMemberSchema } from "@/storage/database/shared/schema"
 
 // GET /api/members/[id] - 获取单个成员
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
+  return loggedAsyncHandler("GET", `/api/members/[id]`, async () => {
     const { id } = await params
-    const member = await memberManager.getMemberById(id)
+    const validatedId = parseIdParam({ id })
+
+    logger.dbOperation("SELECT", "members", { id: validatedId })
+
+    const member = await memberManager.getMemberById(validatedId)
     if (!member) {
-      return NextResponse.json(
-        { success: false, error: "成员不存在" },
-        { status: 404 }
-      )
+      throw new NotFoundError("成员")
     }
-    return NextResponse.json({ success: true, data: member })
-  } catch (error) {
-    console.error("获取成员失败:", error)
-    return NextResponse.json(
-      { success: false, error: "获取成员失败" },
-      { status: 500 }
-    )
-  }
+    return member
+  }).catch((error) => errorResponse(error))
 }
 
 // PUT /api/members/[id] - 更新成员
@@ -30,24 +29,22 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
+  return loggedAsyncHandler("PUT", `/api/members/[id]`, async () => {
     const { id } = await params
+    const validatedId = parseIdParam({ id })
     const body = await request.json()
-    const member = await memberManager.updateMember(id, body)
+
+    // 验证输入数据
+    const validatedData = validateBody(updateMemberSchema, body)
+
+    logger.dbOperation("UPDATE", "members", { id: validatedId })
+
+    const member = await memberManager.updateMember(validatedId, validatedData)
     if (!member) {
-      return NextResponse.json(
-        { success: false, error: "成员不存在" },
-        { status: 404 }
-      )
+      throw new NotFoundError("成员")
     }
-    return NextResponse.json({ success: true, data: member })
-  } catch (error) {
-    console.error("更新成员失败:", error)
-    return NextResponse.json(
-      { success: false, error: "更新成员失败" },
-      { status: 500 }
-    )
-  }
+    return member
+  }).catch((error) => errorResponse(error))
 }
 
 // DELETE /api/members/[id] - 删除成员
@@ -55,21 +52,16 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
+  return loggedAsyncHandler("DELETE", `/api/members/[id]`, async () => {
     const { id } = await params
-    const success = await memberManager.deleteMember(id)
+    const validatedId = parseIdParam({ id })
+
+    logger.dbOperation("DELETE", "members", { id: validatedId })
+
+    const success = await memberManager.deleteMember(validatedId)
     if (!success) {
-      return NextResponse.json(
-        { success: false, error: "成员不存在" },
-        { status: 404 }
-      )
+      throw new NotFoundError("成员")
     }
-    return NextResponse.json({ success: true, message: "删除成功" })
-  } catch (error) {
-    console.error("删除成员失败:", error)
-    return NextResponse.json(
-      { success: false, error: "删除成员失败" },
-      { status: 500 }
-    )
-  }
+    return { message: "删除成功" }
+  }).catch((error) => errorResponse(error))
 }
