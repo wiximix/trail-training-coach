@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-18 | `90e74e8b628ffb357dd05fbe5d2df31b873e7e7e` | main | chore: 发布版本 1.0.1 - 更改配速格式验证从 MM:SS 到 MMSS | 无 |  |
 | 2026-01-18 | `edffd9e478f665a0dc2e32431dc539c25e3f8328` | main | refactor: 更改配速格式验证从 MM:SS 到 MMSS | 无 | src/components/forms/MemberForm.tsx,src/lib/trailAlgorithm.ts,src/lib/validation.ts,tsconfig.tsbuildinfo |
 | 2026-01-17 | `62f3186b48926b0b4b6491b4118a562f2745b394` | main | feat: 完成组件复用增强与表单抽离优化 | 无 | docs/component-refactor-completed.md,docs/refine_status.md,src/app/members/new/page.tsx,src/app/predict/page.tsx,src/app/trails/new/page.tsx,src/components/features/checkpoint/CheckpointTable.tsx,src/components/features/checkpoint/index.ts,src/components/features/supply/SupplyCalculator.tsx,src/components/features/supply/index.ts,src/components/forms/MemberForm.tsx,src/components/forms/README.md,src/components/forms/TrailForm.tsx,src/components/forms/index.ts |
 | 2026-01-17 | `1bb67290b9dfbe2cf2f3a97f6d8fb974957c90b7` | main | feat: 完成高优先级优化 - 统一错误处理和输入验证 | 无 | src/app/api/auth/login/route.ts,src/app/api/auth/register/route.ts,src/app/api/members/[id]/route.ts,src/app/api/members/route.ts,src/app/api/predict/route.ts,src/app/api/teams/route.ts,src/app/api/trails/[id]/route.ts,src/app/api/trails/route.ts,src/lib/errorHandler.ts,src/lib/logger.ts,src/lib/validation.ts,tsconfig.tsbuildinfo |
