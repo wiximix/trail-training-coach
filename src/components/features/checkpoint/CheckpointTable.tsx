@@ -61,17 +61,22 @@ export default function CheckpointTable({
   customFlatBaselinePace,
 }: CheckpointTableProps) {
   const parseMMSSPace = (pace: string): number => {
-    if (!pace) return 6.0
-    const cleaned = pace.replace(/[:/]/g, '').padStart(4, '0')
-    const minutes = parseInt(cleaned.substring(0, 2))
-    const seconds = parseInt(cleaned.substring(2, 4))
+    if (!pace || pace.trim() === "") {
+      return 6.0
+    }
+    const num = parseInt(pace, 10)
+    if (isNaN(num)) {
+      return 6.0
+    }
+    const minutes = Math.floor(num / 100)
+    const seconds = num % 100
     return minutes + seconds / 60
   }
 
   const formatMinutesToMMSS = (minutes: number): string => {
     const mins = Math.floor(minutes)
     const secs = Math.round((minutes - mins) * 60)
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    return `${mins}${secs.toString().padStart(2, '0')}`
   }
 
   return (

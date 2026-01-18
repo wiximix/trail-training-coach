@@ -192,14 +192,18 @@ export default function MemberForm({
         <div className="space-y-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              平路基准配速 P0（如 5:30/km）
+              平路基准配速 P0（MMSS 格式，如 530 代表 5分30秒/公里）
             </label>
             <input
               type="text"
-              placeholder="5:30"
+              placeholder="530"
               value={formData.flatBaselinePace}
-              onChange={(e) => setFormData({ ...formData, flatBaselinePace: e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '') // 只允许数字
+                setFormData({ ...formData, flatBaselinePace: value })
+              }}
               className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              maxLength={4}
             />
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               跑者跑步能力中"有氧耐力区间"的平均配速（越野赛以有氧强度为主）
@@ -263,26 +267,34 @@ export default function MemberForm({
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              乳酸阈值配速
+              乳酸阈值配速（MMSS 格式）
             </label>
             <input
               type="text"
+              placeholder="445"
               value={formData.lactateThresholdPace}
-              onChange={(e) => setFormData({ ...formData, lactateThresholdPace: e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '') // 只允许数字
+                setFormData({ ...formData, lactateThresholdPace: value })
+              }}
               className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-              placeholder="4:45"
+              maxLength={4}
             />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              马拉松配速
+              马拉松配速（MMSS 格式）
             </label>
             <input
               type="text"
               value={formData.marathonPace}
-              onChange={(e) => setFormData({ ...formData, marathonPace: e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '') // 只允许数字
+                setFormData({ ...formData, marathonPace: value })
+              }}
               className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-              placeholder="5:00"
+              placeholder="500"
+              maxLength={4}
             />
           </div>
         </div>

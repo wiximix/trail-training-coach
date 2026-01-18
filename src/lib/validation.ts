@@ -135,22 +135,23 @@ export function isValidUUID(id: string): boolean {
 }
 
 /**
- * 配速格式验证 (MM:SS 格式)
+ * 配速格式验证 (MMSS 格式，如 630 表示 6分30秒)
  */
 export const paceSchema = z
   .string()
-  .regex(/^\d{1,2}:\d{2}$/, "配速格式应为 MM:SS")
+  .regex(/^\d{3,4}$/, "配速格式应为 MMSS（如 630 表示 6分30秒）")
   .refine(
     (val) => {
-      const [minutes, seconds] = val.split(":").map(Number)
+      const minutes = parseInt(val.slice(0, -2), 10)
+      const seconds = parseInt(val.slice(-2), 10)
       return (
         minutes >= 0 &&
-        minutes < 60 &&
+        minutes < 100 &&
         seconds >= 0 &&
         seconds < 60
       )
     },
-    "配速范围应在 0:00 - 59:59 之间"
+    "配速范围应在 0000 - 9959 之间，秒数应小于 60"
   )
 
 /**
@@ -208,7 +209,7 @@ export const predictionParamsSchema = z.object({
   customElevationLossCoefficient: z
     .number()
     .min(0, "爬升损耗系数不能为负数")
-    .max(0.5, "爬升损耗系数不能超过 0.5")
+    .max(2, "爬升损耗系数不能超过 2")
     .optional(),
   gelCarbs: z.number().optional(),
   saltElectrolytes: z.number().optional(),

@@ -267,21 +267,22 @@ export function parsePace(paceStr: string): number {
     return 6.0
   }
 
-  // 去除可能的 "/km" 后缀
-  const cleanPaceStr = paceStr.replace("/km", "")
+  // 去除可能的 "/km" 后缀和 ":" 分隔符
+  const cleanPaceStr = paceStr.replace("/km", "").replace(":", "")
 
-  // 解析配速字符串
-  const parts = cleanPaceStr.split(":")
+  // 解析为整数（MMSS格式）
+  const num = parseInt(cleanPaceStr, 10)
 
-  // 标准格式：分钟:秒
-  if (parts.length === 2) {
-    const minutes = Number(parts[0])
-    const seconds = Number(parts[1])
-    return minutes + seconds / 60
+  if (isNaN(num)) {
+    // 格式错误时返回默认值
+    return 6.0
   }
 
-  // 格式错误时返回默认值
-  return 6.0
+  // 将MMSS格式转换为分钟
+  const minutes = Math.floor(num / 100)
+  const seconds = num % 100
+
+  return minutes + seconds / 60
 }
 
 /**
