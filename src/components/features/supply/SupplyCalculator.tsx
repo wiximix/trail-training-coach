@@ -27,7 +27,7 @@ export interface TotalEnergyNeeds {
   electrolytes: number
 }
 
-interface SupplyCalculatorProps {
+export interface SupplyCalculatorProps {
   hourlyEnergyNeeds?: HourlyEnergyNeeds
   dynamicHourlyEnergyNeeds?: HourlyEnergyNeeds
   supplyDosages?: SupplyDosages

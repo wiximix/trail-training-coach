@@ -25,14 +25,15 @@ export function Table({
 }: TableProps) {
   return (
     <div className={cn("overflow-x-auto", className)}>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.key}
                 className={cn(
-                  "px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500",
+                  "px-4 py-3 text-left text-xs font-medium uppercase tracking-wider",
+                  "text-gray-500 dark:text-gray-400",
                   column.className
                 )}
               >
@@ -41,12 +42,12 @@ export function Table({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
+        <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
           {data.length === 0 ? (
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-4 py-8 text-center text-sm text-gray-500"
+                className="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400"
               >
                 {emptyMessage}
               </td>
@@ -58,7 +59,7 @@ export function Table({
                 onClick={() => onRowClick?.(row, index)}
                 className={cn(
                   "transition-colors",
-                  onRowClick && "cursor-pointer hover:bg-gray-50"
+                  onRowClick && "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
                 )}
               >
                 {columns.map((column) => (
@@ -66,6 +67,7 @@ export function Table({
                     key={column.key}
                     className={cn(
                       "whitespace-nowrap px-4 py-3 text-sm",
+                      "text-gray-900 dark:text-white",
                       column.className
                     )}
                   >

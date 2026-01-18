@@ -20,10 +20,10 @@ export function Button({
   ...props
 }: ButtonProps) {
   const variantClasses = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400",
-    secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:bg-gray-50 disabled:text-gray-400",
-    danger: "bg-red-600 text-white hover:bg-red-700 disabled:bg-gray-400",
-    ghost: "bg-transparent text-gray-700 hover:bg-gray-100 disabled:text-gray-400",
+    primary: "bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-400 dark:disabled:bg-gray-600",
+    secondary: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500",
+    danger: "bg-red-600 dark:bg-red-500 text-white hover:bg-red-700 dark:hover:bg-red-600 disabled:bg-gray-400 dark:disabled:bg-gray-600",
+    ghost: "bg-transparent text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:text-gray-400 dark:disabled:text-gray-500",
   }
 
   const sizeClasses = {

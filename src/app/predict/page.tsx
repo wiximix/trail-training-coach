@@ -109,8 +109,8 @@ export default function PredictPage() {
   const [electrolytePowderWater, setElectrolytePowderWater] = useState("500")
 
   // 动态计算的能量需求和补给份数
-  const [dynamicHourlyEnergyNeeds, setDynamicHourlyEnergyNeeds] = useState<HourlyEnergyNeeds | null>(null)
-  const [dynamicSupplyDosages, setDynamicSupplyDosages] = useState<SupplyDosages | null>(null)
+  const [dynamicHourlyEnergyNeeds, setDynamicHourlyEnergyNeeds] = useState<HourlyEnergyNeeds | undefined>(undefined)
+  const [dynamicSupplyDosages, setDynamicSupplyDosages] = useState<SupplyDosages | undefined>(undefined)
 
   // 自定义平路基准配速P0（全局）
   const [customFlatBaselinePace, setCustomFlatBaselinePace] = useState("")
@@ -755,18 +755,18 @@ export default function PredictPage() {
 
                 {/* 显示动态计算的每小时能量需求 */}
                 <SupplyCalculator
-                  hourlyEnergyNeeds={result.hourlyEnergyNeeds}
+                  hourlyEnergyNeeds={result?.hourlyEnergyNeeds}
                   dynamicHourlyEnergyNeeds={dynamicHourlyEnergyNeeds}
-                  supplyDosages={result.supplyDosages}
+                  supplyDosages={result?.supplyDosages}
                   dynamicSupplyDosages={dynamicSupplyDosages}
-                  totalEnergyNeeds={result.totalEnergyNeeds}
-                  totalSupplyDosages={result.totalSupplyDosages}
+                  totalEnergyNeeds={result?.totalEnergyNeeds}
+                  totalSupplyDosages={result?.totalSupplyDosages}
                 />
 
                 <div className="mb-6">
                   <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">补给策略</h3>
                   <ul className="space-y-2">
-                    {result.overallSupplyStrategy.map((strategy, index) => (
+                    {result?.overallSupplyStrategy?.map((strategy, index) => (
                       <li
                         key={index}
                         className="flex items-start gap-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 p-3"

@@ -43,7 +43,7 @@ export function Modal({
       {/* 模态框内容 */}
       <div
         className={cn(
-          "relative z-10 w-full rounded-lg bg-white shadow-lg",
+          "relative z-10 w-full rounded-lg bg-white dark:bg-gray-800 shadow-lg",
           sizeClasses[size]
         )}
         role="dialog"
@@ -51,12 +51,12 @@ export function Modal({
       >
         {/* 头部 */}
         {title && (
-          <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-            <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h2>
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                className="rounded-full p-1 text-gray-400 dark:text-gray-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <X className="h-5 w-5" />
               </button>

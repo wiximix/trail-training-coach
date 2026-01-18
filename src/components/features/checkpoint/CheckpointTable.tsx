@@ -23,7 +23,7 @@ export interface Checkpoint {
   }
 }
 
-interface CheckpointTableProps {
+export interface CheckpointTableProps {
   checkpoints: Checkpoint[]
   editable?: boolean
   showPrediction?: boolean
@@ -300,21 +300,21 @@ export default function CheckpointTable({
               <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                 {cp.sectionSupply ? (
                   <div className="space-y-1">
-                    {cp.sectionSupply.gels > 0 && (
+                    {(cp.sectionSupply.gels || 0) > 0 && (
                       <div className="text-xs">
                         <span className="font-medium">{cp.sectionSupply.gels}份能量胶</span>
-                        <span className="text-gray-500 dark:text-gray-400">（{cp.sectionSupply.gelCalories}Kcal）</span>
+                        <span className="text-gray-500 dark:text-gray-400">（{cp.sectionSupply.gelCalories || 0}Kcal）</span>
                       </div>
                     )}
-                    {cp.sectionSupply.electrolytePowder > 0 && (
+                    {(cp.sectionSupply.electrolytePowder || 0) > 0 && (
                       <div className="text-xs">
-                        <span className="font-medium">{cp.sectionSupply.electrolytePowder.toFixed(2)}份电解质</span>
+                        <span className="font-medium">{cp.sectionSupply.electrolytePowder?.toFixed(2) || "0"}份电解质</span>
                         <span className="text-gray-500 dark:text-gray-400">
-                          （{cp.sectionSupply.electrolytePowderCalories}Kcal， {cp.sectionSupply.electrolytePowderWater}ml， {cp.sectionSupply.electrolytePowderElectrolytes}mg）
+                          （{cp.sectionSupply.electrolytePowderCalories || 0}Kcal， {cp.sectionSupply.electrolytePowderWater || 0}ml， {cp.sectionSupply.electrolytePowderElectrolytes || 0}mg）
                         </span>
                       </div>
                     )}
-                    {!cp.sectionSupply.gels && !cp.sectionSupply.electrolytePowder && (
+                    {!(cp.sectionSupply.gels || 0) && !(cp.sectionSupply.electrolytePowder || 0) && (
                       <span className="text-xs text-gray-400 dark:text-gray-500">暂无补给数据</span>
                     )}
                   </div>
