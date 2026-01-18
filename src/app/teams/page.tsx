@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import AuthGuard from "@/components/features/auth/AuthGuard"
 import DashboardLayout from "@/components/features/layout/DashboardLayout"
 import { Users, Plus, Search, UserPlus, UserCheck } from "lucide-react"
+import { Button, Card, Input } from "@/components/ui"
 
 interface Team {
   id: string
@@ -122,29 +123,29 @@ export default function TeamsPage() {
           {/* 页面标题和操作按钮 */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">跑团</h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">跑团</h1>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                 创建或加入跑团，与志同道合的跑者一起训练
               </p>
             </div>
-            <button
+            <Button
               onClick={() => router.push("/teams/new")}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center justify-center gap-2"
             >
               <Plus className="h-4 w-4" />
               创建跑团
-            </button>
+            </Button>
           </div>
 
           {/* Tab 切换 */}
-          <div className="border-b border-gray-200">
+          <div className="border-b border-gray-200 dark:border-gray-700">
             <nav className="flex gap-8">
               <button
                 onClick={() => setActiveTab("all")}
                 className={`pb-4 text-sm font-medium transition-colors ${
                   activeTab === "all"
-                    ? "border-b-2 border-blue-600 text-blue-600"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "border-b-2 border-blue-600 text-blue-600 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                 }`}
               >
                 所有跑团
@@ -153,8 +154,8 @@ export default function TeamsPage() {
                 onClick={() => setActiveTab("my")}
                 className={`pb-4 text-sm font-medium transition-colors ${
                   activeTab === "my"
-                    ? "border-b-2 border-blue-600 text-blue-600"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "border-b-2 border-blue-600 text-blue-600 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                 }`}
               >
                 我的跑团
@@ -164,67 +165,67 @@ export default function TeamsPage() {
 
           {/* 搜索栏 */}
           {activeTab === "all" && (
-            <div className="rounded-lg bg-white p-4 shadow-sm">
+            <Card>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input
+                <Input
                   type="text"
                   placeholder="搜索跑团（名称、描述...）"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="pl-10"
                 />
               </div>
-            </div>
+            </Card>
           )}
 
           {/* 错误提示 */}
           {error && (
-            <div className="rounded-lg bg-red-50 p-4 text-red-600">{error}</div>
+            <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-4 text-red-600 dark:text-red-400">{error}</div>
           )}
 
           {/* 我的跑团列表 */}
           {activeTab === "my" && (
             <div className="space-y-4">
               {userTeams.length === 0 ? (
-                <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                    <Users className="h-6 w-6 text-gray-400" />
+                <div className="rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 p-12 text-center">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                    <Users className="h-6 w-6 text-gray-400 dark:text-gray-500" />
                   </div>
-                  <h3 className="mb-2 text-lg font-medium text-gray-900">
+                  <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
                     暂无跑团
                   </h3>
-                  <p className="mb-6 text-sm text-gray-600">
+                  <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
                     加入或创建你的第一个跑团
                   </p>
-                  <button
+                  <Button
                     onClick={() => router.push("/teams/new")}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                    className="inline-flex items-center justify-center gap-2"
                   >
                     <Plus className="h-4 w-4" />
                     创建跑团
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 userTeams.map((userTeam) => (
                   <Link
                     key={userTeam.team.id}
                     href={`/teams/${userTeam.team.id}`}
-                    className="block rounded-lg bg-white p-6 shadow-sm transition-all hover:shadow-md"
+                    className="block rounded-lg bg-white dark:bg-gray-800 p-6 shadow-sm dark:shadow-none transition-all hover:shadow-md dark:hover:shadow-none hover:bg-gray-50 dark:hover:bg-gray-750"
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex-1">
                         <div className="mb-2 flex items-center gap-2">
-                          <h3 className="text-lg font-semibold text-gray-900">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                             {userTeam.team.name}
                           </h3>
                           <span
                             className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                               userTeam.member.role === "owner"
-                                ? "bg-purple-100 text-purple-800"
+                                ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300"
                                 : userTeam.member.role === "admin"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-gray-100 text-gray-800"
+                                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                                : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
                             }`}
                           >
                             {userTeam.member.role === "owner"
@@ -235,16 +236,16 @@ export default function TeamsPage() {
                           </span>
                         </div>
                         {userTeam.team.description && (
-                          <p className="mb-2 text-sm text-gray-600">
+                          <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
                             {userTeam.team.description}
                           </p>
                         )}
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
                           <div className="flex items-center gap-1.5">
                             <Users className="h-4 w-4" />
                             <span>{userTeam.team.memberCount} 成员</span>
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-gray-600 dark:text-gray-400">
                             创建于 {formatDate(userTeam.team.createdAt)}
                           </div>
                         </div>
@@ -260,26 +261,26 @@ export default function TeamsPage() {
           {activeTab === "all" && (
             <div className="space-y-4">
               {filteredTeams.length === 0 ? (
-                <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                    <Users className="h-6 w-6 text-gray-400" />
+                <div className="rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 p-12 text-center">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                    <Users className="h-6 w-6 text-gray-400 dark:text-gray-500" />
                   </div>
-                  <h3 className="mb-2 text-lg font-medium text-gray-900">
+                  <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
                     {searchQuery ? "未找到匹配的跑团" : "暂无跑团"}
                   </h3>
-                  <p className="mb-6 text-sm text-gray-600">
+                  <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
                     {searchQuery
                       ? "请尝试其他搜索关键词"
                       : "成为第一个创建跑团的人"}
                   </p>
                   {!searchQuery && (
-                    <button
+                    <Button
                       onClick={() => router.push("/teams/new")}
-                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                      className="inline-flex items-center justify-center gap-2"
                     >
                       <Plus className="h-4 w-4" />
                       创建跑团
-                    </button>
+                    </Button>
                   )}
                 </div>
               ) : (
@@ -290,26 +291,26 @@ export default function TeamsPage() {
                   return (
                     <div
                       key={team.id}
-                      className="rounded-lg bg-white p-6 shadow-sm transition-all hover:shadow-md"
+                      className="rounded-lg bg-white dark:bg-gray-800 p-6 shadow-sm dark:shadow-none transition-all hover:shadow-md dark:hover:shadow-none hover:bg-gray-50 dark:hover:bg-gray-750"
                     >
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex-1">
                           <Link href={`/teams/${team.id}`}>
-                            <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                               {team.name}
                             </h3>
                           </Link>
                           {team.description && (
-                            <p className="mb-2 mt-2 text-sm text-gray-600">
+                            <p className="mb-2 mt-2 text-sm text-gray-600 dark:text-gray-400">
                               {team.description}
                             </p>
                           )}
-                          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                          <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
                             <div className="flex items-center gap-1.5">
                               <Users className="h-4 w-4" />
                               <span>{team.memberCount} 成员</span>
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
                               创建于 {formatDate(team.createdAt)}
                             </div>
                           </div>
@@ -317,17 +318,17 @@ export default function TeamsPage() {
 
                         <div className="flex gap-2">
                           {isTeamMember ? (
-                            <span className="inline-flex items-center gap-1 rounded-lg bg-green-50 px-3 py-2 text-sm font-medium text-green-600">
+                            <span className="inline-flex items-center gap-1 rounded-lg bg-green-50 dark:bg-green-900/30 px-3 py-2 text-sm font-medium text-green-600 dark:text-green-400">
                               <UserCheck className="h-4 w-4" />
                               已加入
                             </span>
                           ) : applicationStatus === "pending" ? (
-                            <span className="inline-flex items-center gap-1 rounded-lg bg-yellow-50 px-3 py-2 text-sm font-medium text-yellow-600">
+                            <span className="inline-flex items-center gap-1 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 px-3 py-2 text-sm font-medium text-yellow-600 dark:text-yellow-400">
                               <UserPlus className="h-4 w-4" />
                               等待审核
                             </span>
                           ) : (
-                            <button
+                            <Button
                               onClick={async () => {
                                 try {
                                   const response = await fetch(`/api/teams/${team.id}/members`, {
@@ -346,11 +347,12 @@ export default function TeamsPage() {
                                   alert("网络错误，请稍后重试")
                                 }
                               }}
-                              className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100 transition-colors"
+                              variant="ghost"
+                              className="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50"
                             >
                               <UserPlus className="h-4 w-4" />
                               申请加入
-                            </button>
+                            </Button>
                           )}
                         </div>
                       </div>
