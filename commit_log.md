@@ -37,6 +37,7 @@ git commit -m "your message"
 
 | 日期 | Commit Hash | 分支 | 提交信息 | 提示词 | 影响文件 |
 |------|-------------|------|----------|--------|----------|
+| 2026-01-18 | `fc103dbf952ab0d5060e8e61c070cc556da5bec6` | main | feat: 完成样式工程化优化第二阶段，迁移认证、成员、跑团页面使用UI组件库 | 无 | src/app/auth/login/LoginClient.tsx,src/app/auth/register/page.tsx,src/app/auth/reset-password/ResetPasswordClient.tsx,src/app/members/[id]/edit/page.tsx,src/app/teams/new/page.tsx,src/app/teams/page.tsx,tsconfig.tsbuildinfo |
 | 2026-01-18 | `35cd9f0f60600d41f0b4af86c1a97933e4e978ad` | main | refactor: 完成样式工程化优化 - UI组件库迁移与主题系统完善 | 无 | src/app/predict/page.tsx,src/components/features/checkpoint/CheckpointTable.tsx,src/components/features/supply/SupplyCalculator.tsx,src/components/forms/MemberForm.tsx,src/components/forms/TrailForm.tsx,src/components/ui/Button.tsx,src/components/ui/Card.tsx,src/components/ui/Input.tsx,src/components/ui/Label.tsx,src/components/ui/Modal.tsx,src/components/ui/Select.tsx,src/components/ui/Table.tsx,src/components/ui/index.ts,src/lib/styles.ts,tsconfig.tsbuildinfo |
 | 2026-01-18 | `2c6304a369631d8e06646c9964eb9851b3a8a6bb` | main | docs: 样式代码分析完成，提供工程化优化建议 | 无 |  |
 | 2026-01-18 | `47872b9515ce3cb4d67efc818a6319f1ea0c9eff` | main | chore: 推送版本 1.0.1 及相关提交至远程仓库 | 无 |  |
