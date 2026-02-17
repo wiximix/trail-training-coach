@@ -11,10 +11,53 @@ enum LogLevel {
 }
 
 /**
+ * 日志级别优先级
+ */
+const LOG_LEVEL_PRIORITY: Record<LogLevel, number> = {
+  [LogLevel.DEBUG]: 0,
+  [LogLevel.INFO]: 1,
+  [LogLevel.WARN]: 2,
+  [LogLevel.ERROR]: 3,
+}
+
+/**
+ * 根据环境变量获取当前日志级别
+ */
+function getCurrentLogLevel(): LogLevel {
+  const env = process.env.NODE_ENV || "development"
+  const logLevel = process.env.LOG_LEVEL
+
+  if (logLevel && logLevel in LOG_LEVEL_PRIORITY) {
+    return logLevel as LogLevel
+  }
+
+  // 默认配置
+  if (env === "production") {
+    return LogLevel.INFO
+  }
+  if (env === "test") {
+    return LogLevel.WARN
+  }
+  return LogLevel.DEBUG
+}
+
+/**
  * Logger 类
  * 提供统一的日志输出接口
  */
 class Logger {
+  private currentLogLevel: LogLevel
+
+  constructor() {
+    this.currentLogLevel = getCurrentLogLevel()
+  }
+
+  /**
+   * 检查是否应该输出指定级别的日志
+   */
+  private shouldLog(level: LogLevel): boolean {
+    return LOG_LEVEL_PRIORITY[level] >= LOG_LEVEL_PRIORITY[this.currentLogLevel]
+  }
   /**
    * 格式化日志消息
    * @param level 日志级别
@@ -34,7 +77,9 @@ class Logger {
    * @param meta 附加元数据
    */
   info(message: string, meta?: any): void {
-    console.log(this.format(LogLevel.INFO, message, meta))
+    if (this.shouldLog(LogLevel.INFO)) {
+      console.log(this.format(LogLevel.INFO, message, meta))
+    }
   }
 
   /**
@@ -43,7 +88,9 @@ class Logger {
    * @param meta 附加元数据
    */
   warn(message: string, meta?: any): void {
-    console.warn(this.format(LogLevel.WARN, message, meta))
+    if (this.shouldLog(LogLevel.WARN)) {
+      console.warn(this.format(LogLevel.WARN, message, meta))
+    }
   }
 
   /**
@@ -52,7 +99,9 @@ class Logger {
    * @param error 错误对象或附加元数据
    */
   error(message: string, error?: Error | any): void {
-    console.error(this.format(LogLevel.ERROR, message, error))
+    if (this.shouldLog(LogLevel.ERROR)) {
+      console.error(this.format(LogLevel.ERROR, message, error))
+    }
   }
 
   /**
@@ -61,7 +110,7 @@ class Logger {
    * @param meta 附加元数据
    */
   debug(message: string, meta?: any): void {
-    if (process.env.NODE_ENV === "development") {
+    if (this.shouldLog(LogLevel.DEBUG)) {
       console.log(this.format(LogLevel.DEBUG, message, meta))
     }
   }
@@ -92,10 +141,12 @@ class Logger {
     duration: number,
     meta?: any
   ): void {
-    const level = status >= 500 ? LogLevel.ERROR : LogLevel.INFO
-    console.log(
-      this.format(level, `${method} ${path} - ${status} (${duration}ms)`, meta)
-    )
+    const message = `${method} ${path} - ${status} (${duration}ms)`
+    if (status >= 500) {
+      this.error(message, meta)
+    } else {
+      this.info(message, meta)
+    }
   }
 
   /**

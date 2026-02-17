@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm audit:*)",
+      "Bash(npm audit --json)",
+      "Bash(npm install:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run test:run:*)",
+      "Bash(npm view:*)",
+      "WebSearch",
+      "Bash(timeout:*)",
+      "Bash(node:*)",
+      "Bash(npm run test:*)"
+    ]
+  }
+}

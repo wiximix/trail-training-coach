@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { reviewManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
 
 // GET /api/reviews - 获取复盘列表
 export async function GET(request: NextRequest) {
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: reviews })
   } catch (error) {
-    console.error("获取复盘列表失败:", error)
+    logger.error("获取复盘列表失败", error)
     return NextResponse.json(
       { success: false, error: "获取复盘列表失败" },
       { status: 500 }
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
     const review = await reviewManager.createReview(body)
     return NextResponse.json({ success: true, data: review }, { status: 201 })
   } catch (error) {
-    console.error("创建复盘记录失败:", error)
+    logger.error("创建复盘记录失败", error)
     return NextResponse.json(
       { success: false, error: "创建复盘记录失败" },
       { status: 500 }

@@ -8,6 +8,7 @@ import {
   calculateSlopePercent,
   calculateElevationFactor,
 } from "@/lib/trailAlgorithm"
+import { logger } from "@/lib/logger"
 
 interface Checkpoint {
   id: number
@@ -261,7 +262,7 @@ export default function EditTrailPage({ params }: { params: Promise<{ id: string
         })),
       }
 
-      console.log("提交数据:", JSON.stringify(payload, null, 2))
+      logger.debug("提交数据", { payload })
 
       const response = await fetch(`/api/trails/${trailId}`, {
         method: "PUT",
@@ -270,18 +271,18 @@ export default function EditTrailPage({ params }: { params: Promise<{ id: string
       })
 
       const data = await response.json()
-      console.log("API响应:", data)
+      logger.debug("API响应", { data })
 
       if (data.success) {
         // 刷新路由缓存，确保列表页面显示最新数据
         router.refresh()
         router.push("/trails")
       } else {
-        console.error("保存失败:", data.error)
+        logger.error("保存失败", { error: data.error })
         setError(data.error || "更新赛道失败")
       }
     } catch (err) {
-      console.error("保存出错:", err)
+      logger.error("保存出错", err)
       setError("网络错误，请稍后重试")
     } finally {
       setSaving(false)

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/storage/database"
 import { terrainTypes, updateTerrainTypeSchema } from "@/storage/database/shared/schema"
 import { eq } from "drizzle-orm"
+import { logger } from "@/lib/logger"
 
 // PATCH /api/terrain-types/[id] - 更新地形类型
 export async function PATCH(
@@ -41,7 +42,7 @@ export async function PATCH(
       data: updatedTerrainType,
     })
   } catch (error: any) {
-    console.error("更新地形类型失败:", error)
+    logger.error("更新地形类型失败", error)
     if (error.name === "ZodError") {
       return NextResponse.json(
         {
@@ -92,7 +93,7 @@ export async function DELETE(
       data: deletedTerrainType,
     })
   } catch (error) {
-    console.error("删除地形类型失败:", error)
+    logger.error("删除地形类型失败", error)
     return NextResponse.json(
       {
         success: false,

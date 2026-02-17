@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { teamManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
 
 // GET /api/teams/[id] - 获取跑团详情
 export async function GET(
@@ -19,7 +20,7 @@ export async function GET(
 
     return NextResponse.json({ success: true, data: team })
   } catch (error) {
-    console.error("获取跑团详情失败:", error)
+    logger.error("获取跑团详情失败", error)
     return NextResponse.json(
       { success: false, error: "获取跑团详情失败" },
       { status: 500 }
@@ -46,7 +47,7 @@ export async function PUT(
 
     return NextResponse.json({ success: true, data: team })
   } catch (error) {
-    console.error("更新跑团失败:", error)
+    logger.error("更新跑团失败", error)
     return NextResponse.json(
       { success: false, error: "更新跑团失败" },
       { status: 500 }
@@ -72,7 +73,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: "跑团删除成功" })
   } catch (error) {
-    console.error("删除跑团失败:", error)
+    logger.error("删除跑团失败", error)
     return NextResponse.json(
       { success: false, error: "删除跑团失败" },
       { status: 500 }

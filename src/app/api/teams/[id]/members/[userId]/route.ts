@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { teamManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
 
 // DELETE /api/teams/[id]/members/[userId] - 移除成员
 export async function DELETE(
@@ -19,7 +20,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: "成员已移除" })
   } catch (error) {
-    console.error("移除成员失败:", error)
+    logger.error("移除成员失败", error)
     return NextResponse.json(
       {
         success: false,

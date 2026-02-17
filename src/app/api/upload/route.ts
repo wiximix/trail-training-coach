@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 // POST /api/upload - 上传路书图片
 export async function POST(request: NextRequest) {
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
       region: "cn-beijing",
     })
 
-    console.log("开始处理上传请求")
+    logger.info("开始处理上传请求")
     const formData = await request.formData()
     const file = formData.get("file") as File
 
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log("文件信息:", {
+    logger.debug("文件信息", {
       name: file.name,
       type: file.type,
       size: file.size,
@@ -50,13 +51,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log("开始转换文件为Buffer")
+    logger.debug("开始转换文件为Buffer")
     // 将文件转换为Buffer
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    console.log("开始上传到对象存储")
-    console.log("对象存储配置:", {
+    logger.debug("开始上传到对象存储")
+    logger.debug("对象存储配置", {
       endpointUrl: process.env.COZE_BUCKET_ENDPOINT_URL,
       bucketName: process.env.COZE_BUCKET_NAME,
     })
@@ -65,15 +66,15 @@ export async function POST(request: NextRequest) {
     const originalFileName = file.name
     const fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'))
     const timestamp = Date.now()
-    
+
     // 只使用时间戳和随机数作为文件名，避免中文字符问题
     const randomSuffix = Math.random().toString(36).substring(2, 8)
     const safeFileName = `route-map-${timestamp}-${randomSuffix}${fileExtension}`
-    
+
     // 上传到对象存储
     const fileName = `route-maps/${safeFileName}`
-    console.log("文件名:", fileName)
-    console.log("原始文件名:", originalFileName)
+    logger.debug("文件名", { fileName })
+    logger.debug("原始文件名", { originalFileName })
 
     const fileKey = await storage.uploadFile({
       fileContent: buffer,
@@ -81,16 +82,16 @@ export async function POST(request: NextRequest) {
       contentType: file.type,
     })
 
-    console.log("上传成功，fileKey:", fileKey)
+    logger.info("上传成功", { fileKey })
 
     // 生成临时访问URL（有效期7天）
-    console.log("生成签名URL")
+    logger.debug("生成签名URL")
     const signedUrl = await storage.generatePresignedUrl({
       key: fileKey,
       expireTime: 604800, // 7天 = 7 * 24 * 3600
     })
 
-    console.log("生成签名URL成功")
+    logger.debug("生成签名URL成功")
 
     return NextResponse.json({
       success: true,
@@ -103,11 +104,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error("上传路书图片失败:", error)
-    console.error("错误详情:", {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    })
+    logger.error("上传路书图片失败", error)
     return NextResponse.json(
       { success: false, error: "上传路书图片失败" },
       { status: 500 }

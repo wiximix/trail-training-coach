@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import AuthGuard from "@/components/features/auth/AuthGuard"
 import DashboardLayout from "@/components/features/layout/DashboardLayout"
 import { Users, Plus, Search, UserPlus, UserCheck } from "lucide-react"
+import { logger } from "@/lib/logger"
 import { Button, Card, Input } from "@/components/ui"
 
 interface Team {
@@ -67,7 +68,7 @@ export default function TeamsPage() {
         setUserTeams(data.data)
       }
     } catch (err) {
-      console.error("获取我的跑团失败:", err)
+      logger.error("获取我的跑团失败", err)
     } finally {
       setLoading(false)
     }

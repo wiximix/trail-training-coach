@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { teamManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
 
 // POST /api/teams/[id]/reject - 拒绝申请
 export async function POST(
@@ -29,7 +30,7 @@ export async function POST(
 
     return NextResponse.json({ success: true, data: member, message: "申请已拒绝" })
   } catch (error) {
-    console.error("拒绝申请失败:", error)
+    logger.error("拒绝申请失败", error)
     return NextResponse.json(
       { success: false, error: "拒绝申请失败" },
       { status: 500 }

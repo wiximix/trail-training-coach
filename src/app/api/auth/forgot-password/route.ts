@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { userManager } from "@/storage/database"
 import { SignJWT } from "jose"
+import { logger } from "@/lib/logger"
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "your-secret-key-change-this-in-production"
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error("忘记密码错误:", error)
+    logger.error("忘记密码错误", error)
     return NextResponse.json(
       {
         success: false,

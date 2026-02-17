@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { logger } from "@/lib/logger"
 
 interface RecognizedCheckpoint {
   distance: number
@@ -150,7 +151,7 @@ JSON格式要求：
     try {
       recognizedData = JSON.parse(jsonString)
     } catch (parseError) {
-      console.error("JSON解析失败:", jsonString)
+      logger.error("JSON解析失败", { jsonString, parseError })
       return NextResponse.json(
         {
           success: false,
@@ -230,7 +231,7 @@ JSON格式要求：
       },
     })
   } catch (error) {
-    console.error("识别路书失败:", error)
+    logger.error("识别路书失败", error)
     return NextResponse.json(
       { success: false, error: "识别路书失败" },
       { status: 500 }

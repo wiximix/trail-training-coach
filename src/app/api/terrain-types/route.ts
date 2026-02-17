@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/storage/database"
 import { terrainTypes, insertTerrainTypeSchema } from "@/storage/database/shared/schema"
 import { eq } from "drizzle-orm"
+import { logger } from "@/lib/logger"
 
 // GET /api/terrain-types - 获取所有地形类型
 export async function GET(request: NextRequest) {
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
       data: results,
     })
   } catch (error) {
-    console.error("获取地形类型失败:", error)
+    logger.error("获取地形类型失败", error)
     return NextResponse.json(
       {
         success: false,
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
       data: newTerrainType,
     })
   } catch (error: any) {
-    console.error("创建地形类型失败:", error)
+    logger.error("创建地形类型失败", error)
     if (error.name === "ZodError") {
       return NextResponse.json(
         {

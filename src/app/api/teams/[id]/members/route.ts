@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { teamManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
 
 // GET /api/teams/[id]/members - 获取跑团成员列表
 export async function GET(
@@ -30,7 +31,7 @@ export async function GET(
 
     return NextResponse.json({ success: true, data: membersWithUser })
   } catch (error) {
-    console.error("获取跑团成员失败:", error)
+    logger.error("获取跑团成员失败", error)
     return NextResponse.json(
       { success: false, error: "获取跑团成员失败" },
       { status: 500 }
@@ -62,7 +63,7 @@ export async function POST(
       { status: 201 }
     )
   } catch (error) {
-    console.error("申请加入跑团失败:", error)
+    logger.error("申请加入跑团失败", error)
     return NextResponse.json(
       {
         success: false,

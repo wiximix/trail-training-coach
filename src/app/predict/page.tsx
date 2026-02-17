@@ -7,6 +7,7 @@ import AuthGuard from "@/components/features/auth/AuthGuard"
 import DashboardLayout from "@/components/features/layout/DashboardLayout"
 import CheckpointTable from "@/components/features/checkpoint"
 import SupplyCalculator from "@/components/features/supply"
+import { logger } from "@/lib/logger"
 import {
   calculateHourlyEnergyNeeds,
   calculateSupplyDosages,
@@ -263,7 +264,7 @@ export default function PredictPage() {
         // 预测成功后，应用侧边栏的参数到CP点列表
         applySidebarParams()
       } else {
-        console.log(data)
+        logger.debug("预测失败", { data })
         setError(data.error || "预测失败")
       }
     } catch (err) {

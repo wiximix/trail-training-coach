@@ -37,7 +37,7 @@ async function getGlobalTerrainPaceFactors(): Promise<TerrainPaceFactors> {
 
     return factors
   } catch (error) {
-    console.error("获取地形类型系数失败:", error)
+    logger.error("获取地形类型系数失败", error)
     return {}
   }
 }

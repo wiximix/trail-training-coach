@@ -4,6 +4,7 @@ import { jwtVerify } from "jose"
 import { eq } from "drizzle-orm"
 import { getDb } from "@/storage/database/db"
 import { users } from "@/storage/database/shared/schema"
+import { logger } from "@/lib/logger"
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "your-secret-key-change-this-in-production"
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
       message: "密码重置成功，请使用新密码登录",
     })
   } catch (error) {
-    console.error("重置密码错误:", error)
+    logger.error("重置密码错误", error)
 
     if (error instanceof Error && error.name === "JWTExpired") {
       return NextResponse.json(

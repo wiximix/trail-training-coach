@@ -5,6 +5,7 @@ import { useParams } from "next/navigation"
 import Link from "next/link"
 import AuthGuard from "@/components/features/auth/AuthGuard"
 import DashboardLayout from "@/components/features/layout/DashboardLayout"
+import { logger } from "@/lib/logger"
 import {
   Users,
   Calendar,
@@ -89,7 +90,7 @@ export default function TeamDetailPage() {
         setMembers(data.data)
       }
     } catch (err) {
-      console.error("获取成员列表失败:", err)
+      logger.error("获取成员列表失败", err)
     } finally {
       setLoading(false)
     }

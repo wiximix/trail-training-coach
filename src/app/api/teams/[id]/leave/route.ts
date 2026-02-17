@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { teamManager } from "@/storage/database"
+import { logger } from "@/lib/logger"
 
 // POST /api/teams/[id]/leave - 退出跑团
 export async function POST(
@@ -29,7 +30,7 @@ export async function POST(
 
     return NextResponse.json({ success: true, message: "已退出跑团" })
   } catch (error) {
-    console.error("退出跑团失败:", error)
+    logger.error("退出跑团失败", error)
     return NextResponse.json(
       {
         success: false,
