@@ -5,6 +5,8 @@ import { errorResponse, loggedAsyncHandler, successResponse } from "@/lib/errorH
 import { parsePaginationParams, validateBody } from "@/lib/validation"
 import { insertMemberSchema } from "@/storage/database/shared/schema"
 
+export const dynamic = 'force-dynamic'
+
 // GET /api/members - 获取成员列表
 export async function GET(request: NextRequest) {
   return loggedAsyncHandler("GET", "/api/members", async () => {

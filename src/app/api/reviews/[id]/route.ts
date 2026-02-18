@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import { NextRequest, NextResponse } from "next/server"
 import { reviewManager } from "@/storage/database"
 import { logger } from "@/lib/logger"

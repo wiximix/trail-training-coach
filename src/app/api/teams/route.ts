@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import { NextRequest } from "next/server"
 import { teamManager } from "@/storage/database"
 import { logger } from "@/lib/logger"

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/storage/database"
 import { terrainTypes, updateTerrainTypeSchema } from "@/storage/database/shared/schema"

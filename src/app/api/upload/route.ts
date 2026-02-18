@@ -1,20 +1,26 @@
+export const dynamic = "force-dynamic"
 import { NextRequest, NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
+import { writeFile, mkdir } from 'fs/promises'
+import { join } from 'path'
+
+// 确保上传目录存在
+const uploadDir = join(process.cwd(), 'public', 'uploads')
+const ensureUploadDir = async () => {
+  try {
+    await mkdir(uploadDir, { recursive: true })
+  } catch (error) {
+    // 目录已存在或其他错误
+    if ((error as any).code !== 'EEXIST') {
+      throw error
+    }
+  }
+}
 
 // POST /api/upload - 上传路书图片
 export async function POST(request: NextRequest) {
   try {
-    // 动态导入S3Storage，避免客户端打包问题
-    const { S3Storage } = await import("coze-coding-dev-sdk")
-
-    // 初始化对象存储
-    const storage = new S3Storage({
-      endpointUrl: process.env.COZE_BUCKET_ENDPOINT_URL,
-      accessKey: "",
-      secretKey: "",
-      bucketName: process.env.COZE_BUCKET_NAME,
-      region: "cn-beijing",
-    })
+    await ensureUploadDir()
 
     logger.info("开始处理上传请求")
     const formData = await request.formData()
@@ -56,47 +62,36 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    logger.debug("开始上传到对象存储")
-    logger.debug("对象存储配置", {
-      endpointUrl: process.env.COZE_BUCKET_ENDPOINT_URL,
-      bucketName: process.env.COZE_BUCKET_NAME,
-    })
+    logger.debug("开始保存文件到本地")
 
     // 生成安全的文件名：移除非法字符，只保留字母、数字、点、下划线、短横
     const originalFileName = file.name
     const fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'))
     const timestamp = Date.now()
 
-    // 只使用时间戳和随机数作为文件名，避免中文字符问题
+    // 使用时间戳和随机数作为文件名，避免中文字符问题
     const randomSuffix = Math.random().toString(36).substring(2, 8)
     const safeFileName = `route-map-${timestamp}-${randomSuffix}${fileExtension}`
 
-    // 上传到对象存储
-    const fileName = `route-maps/${safeFileName}`
+    // 保存到本地
+    const fileName = `uploads/${safeFileName}`
+    const filePath = join(uploadDir, safeFileName)
     logger.debug("文件名", { fileName })
     logger.debug("原始文件名", { originalFileName })
 
-    const fileKey = await storage.uploadFile({
-      fileContent: buffer,
-      fileName: fileName,
-      contentType: file.type,
-    })
+    // 写入文件
+    await writeFile(filePath, buffer)
 
-    logger.info("上传成功", { fileKey })
+    logger.info("上传成功", { fileName })
 
-    // 生成临时访问URL（有效期7天）
-    logger.debug("生成签名URL")
-    const signedUrl = await storage.generatePresignedUrl({
-      key: fileKey,
-      expireTime: 604800, // 7天 = 7 * 24 * 3600
-    })
-
-    logger.debug("生成签名URL成功")
+    // 生成访问URL
+    const signedUrl = `/uploads/${safeFileName}`
+    logger.debug("生成访问URL成功", { signedUrl })
 
     return NextResponse.json({
       success: true,
       data: {
-        fileKey,
+        fileKey: safeFileName,
         fileName,
         signedUrl,
         fileType: file.type,
