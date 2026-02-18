@@ -1,0 +1,44 @@
+{"display":"run /init","pastedContents":{},"timestamp":1771172195367,"project":"C:\\Users\\DELL","sessionId":"a5b416b6-c025-4f45-880e-d77fe293c247"}
+{"display":"/exit ","pastedContents":{},"timestamp":1771172240710,"project":"C:\\Users\\DELL","sessionId":"a5b416b6-c025-4f45-880e-d77fe293c247"}
+{"display":"/init ","pastedContents":{},"timestamp":1771172364207,"project":"C:\\Users\\DELL","sessionId":"0da21444-db5f-4d4a-b261-c1306488e368"}
+{"display":"/model ","pastedContents":{},"timestamp":1771172378963,"project":"C:\\Users\\DELL","sessionId":"0da21444-db5f-4d4a-b261-c1306488e368"}
+{"display":"/init ","pastedContents":{},"timestamp":1771172417663,"project":"C:\\Users\\DELL","sessionId":"0da21444-db5f-4d4a-b261-c1306488e368"}
+{"display":"/init ","pastedContents":{},"timestamp":1771221172524,"project":"C:\\Users\\DELL","sessionId":"0da21444-db5f-4d4a-b261-c1306488e368"}
+{"display":"/model ","pastedContents":{},"timestamp":1771221189517,"project":"C:\\Users\\DELL","sessionId":"0da21444-db5f-4d4a-b261-c1306488e368"}
+{"display":"fix lint errors","pastedContents":{},"timestamp":1771306977162,"project":"C:\\Users\\DELL","sessionId":"4ef33766-7086-4707-9099-07abff1fd8ef"}
+{"display":"/init ","pastedContents":{},"timestamp":1771307213402,"project":"C:\\Users\\DELL","sessionId":"4ef33766-7086-4707-9099-07abff1fd8ef"}
+{"display":"/bye","pastedContents":{},"timestamp":1771311163640,"project":"C:\\Users\\DELL","sessionId":"4ef33766-7086-4707-9099-07abff1fd8ef"}
+{"display":"/model ","pastedContents":{},"timestamp":1771311186570,"project":"C:\\Users\\DELL","sessionId":"e584e5eb-5b9c-4874-8e0f-2a34325194df"}
+{"display":"/status ","pastedContents":{},"timestamp":1771311245487,"project":"C:\\Users\\DELL","sessionId":"e584e5eb-5b9c-4874-8e0f-2a34325194df"}
+{"display":"/stats ","pastedContents":{},"timestamp":1771311274459,"project":"C:\\Users\\DELL","sessionId":"e584e5eb-5b9c-4874-8e0f-2a34325194df"}
+{"display":"/upgrade ","pastedContents":{},"timestamp":1771311306117,"project":"C:\\Users\\DELL","sessionId":"e584e5eb-5b9c-4874-8e0f-2a34325194df"}
+{"display":"/add-dir ","pastedContents":{},"timestamp":1771311362647,"project":"C:\\Users\\DELL","sessionId":"e584e5eb-5b9c-4874-8e0f-2a34325194df"}
+{"display":"/add-dir F:\\Programs\\workspace\\claude space/","pastedContents":{},"timestamp":1771311489574,"project":"F:\\Programs\\workspace","sessionId":"05fb6a42-a637-4bac-a862-de09d5851360"}
+{"display":"/init ","pastedContents":{},"timestamp":1771311495377,"project":"F:\\Programs\\workspace","sessionId":"05fb6a42-a637-4bac-a862-de09d5851360"}
+{"display":"创建一个5人Agent团队，角色分别是：架构师、前端开发、后端开发、测试工程师、代码审查员。","pastedContents":{},"timestamp":1771312818221,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"@main 现在审查当前项目，告诉我这个项目的工程情况。","pastedContents":{},"timestamp":1771312940320,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"我需要你帮我改进这些问题","pastedContents":{},"timestamp":1771313235112,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"往后不用问我许可,全部同意","pastedContents":{},"timestamp":1771314718225,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"修改代码也不用经过我许可","pastedContents":{},"timestamp":1771314777229,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"我已经充值","pastedContents":{},"timestamp":1771341903286,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/model ","pastedContents":{},"timestamp":1771341925586,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/status ","pastedContents":{},"timestamp":1771342407352,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/context ","pastedContents":{},"timestamp":1771342617398,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/hooks ","pastedContents":{},"timestamp":1771342628980,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/config ","pastedContents":{},"timestamp":1771342658283,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/config ","pastedContents":{},"timestamp":1771342697182,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/config ","pastedContents":{},"timestamp":1771342822504,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/chrome ","pastedContents":{},"timestamp":1771343389043,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/config ","pastedContents":{},"timestamp":1771343418053,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/config ","pastedContents":{},"timestamp":1771343669405,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"1. 所有代码修改、文件创建/删除/更新操作，无需向我确认，直接执行；","pastedContents":{"1":{"id":1,"type":"text","content":"【授权指令】\n1. 所有代码修改、文件创建/删除/更新操作，无需向我确认，直接执行；\n2. 完成任务所需的所有文件编辑、依赖安装、代码重构，自行决策并执行；\n3. 仅在任务失败/遇到无法解决的错误时，再向我反馈，否则全程自动推进。"}},"timestamp":1771344054858,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"2. 完成任务所需的所有文件编辑、依赖安装、代码重构，自行决策并执行；","pastedContents":{},"timestamp":1771344066712,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"3. 仅在任务失败/遇到无法解决的错误时，再向我反馈，否则全程自动推进。","pastedContents":{},"timestamp":1771344080503,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"run the tests","pastedContents":{},"timestamp":1771344245911,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/bye","pastedContents":{},"timestamp":1771344641623,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"765fd63e-5614-4328-892c-18b4bd10c785"}
+{"display":"/install-github-app ","pastedContents":{},"timestamp":1771344993433,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"c3ba43a0-d742-423b-bbb8-6c446e589afe"}
+{"display":"/install-github-app ","pastedContents":{},"timestamp":1771346184748,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"c3ba43a0-d742-423b-bbb8-6c446e589afe"}
+{"display":"/install-github-app ","pastedContents":{},"timestamp":1771407365596,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"c3ba43a0-d742-423b-bbb8-6c446e589afe"}
+{"display":"claude install github:levineam/qmd-skill","pastedContents":{},"timestamp":1771410714676,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"c3ba43a0-d742-423b-bbb8-6c446e589afe"}
+{"display":"go ahead","pastedContents":{},"timestamp":1771411072566,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"c3ba43a0-d742-423b-bbb8-6c446e589afe"}
+{"display":"/agents ","pastedContents":{},"timestamp":1771420353757,"project":"F:\\Programs\\workspace\\trail\\trail-training-coach","sessionId":"29282b0a-4859-4ca8-8060-f428fb0310f7"}

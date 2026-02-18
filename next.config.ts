@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
   },
   // 启用严格模式
   reactStrictMode: true,
+  // 配置静态导出
+  output: 'export',
+  // 禁用图片优化以支持静态导出
+  images: {
+    unoptimized: true
+  },
+  // 配置 basePath 用于 GitHub Pages
+  basePath: process.env.NODE_ENV === 'production' ? '/trail-training-coach' : '',
 };
 
 export default nextConfig;

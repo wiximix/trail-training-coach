@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 5000",
     "build": "next build",
+    "build:static": "NODE_ENV=production BASE_PATH=/trail-training-coach next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
@@ -20,8 +21,8 @@
     "esbuild": "^0.25.0"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.958.0",
-    "@aws-sdk/lib-storage": "^3.958.0",
+    "@aws-sdk/client-s3": "^3.893.0",
+    "@aws-sdk/lib-storage": "^3.893.0",
     "@hookform/resolvers": "^5.2.2",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
@@ -50,17 +51,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.4",
-    "@vitest/coverage-v8": "^4.0.18",
-    "drizzle-kit": "^0.31.9",
-    "esbuild": "^0.25.0",
-    "eslint": "^9",
-    "eslint-config-next": "^16.1.6",
-    "happy-dom": "^20.6.1",
-    "jsdom": "^28.1.0",
+    "drizzle-kit": "^0.30.4",
+    "eslint": "^10.0.0",
+    "eslint-config-next": "^0.2.4",
+    "jsdom": "^26.0.1",
     "tailwindcss": "^4",
-    "tsx": "^4.21.0",
-    "typescript": "^5",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "typescript": "^5.9.0",
+    "vitest": "^3.0.7"
   }
 }
