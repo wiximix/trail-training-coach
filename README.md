@@ -386,7 +386,7 @@ coze start
 如有问题或建议，请通过以下方式联系：
 
 - GitHub Issues：[提交问题](https://github.com/wiximix/trail-training-coach/issues)
-- 邮箱：your-email@example.com
+- 邮箱：wix.wang@outlook.com
 
 ## 致谢
 
