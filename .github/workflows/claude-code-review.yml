@@ -1,0 +1,26 @@
+name: Claude Code Review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, master]
+
+jobs:
+  claude-code-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # 可选：指定模型（适配智谱GLM）
+          model: "glm-4.7"
+          # 可选：自定义评审规则
+          instructions: "重点评审代码逻辑、语法错误、性能优化点，给出具体修改建议"
+        env:
+          ANTHROPIC_BASE_URL: "https://open.bigmodel.cn/api/anthropic" # 适配智谱的Base URL
